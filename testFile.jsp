@@ -8,17 +8,32 @@
 
  class Product 
  {
-	 constructor(QR_Code, TransactionNumber, ProductName, ManufacturerName, currentUser, checkoutDate, checkinDate)
+	 constructor(QR_Code, manufacturerName, productName, checkoutDate, checkinDate)
 	 {
 		 this.QR_Code = QR_Code;
-		 this.TransactionNumber = TransactionNumber;
-		 this.ProductName = ProductName;
-		 this.ManufacturerName = ManufacturerName;
-		 this.currentUser = currentUser;
+		 this.manufacturerName = manufacturerName;
+		 this.productName = productName;
+		 this.checkoutDate = checkoutDate;
+		 this.checkinDate = checkinDate;
+	 } 
+ }
+ 
+ class Transaction
+ {
+	 constructor(transactionNumber, QR_Code, manufacturerName, productName, studentNumber, studentName, studentEmail, organizationName, checkoutDate, checkinDate)
+	 {
+		 this.transactionNumber = transactionNumber;
+		 this.QR_Code = QR_Code;
+		 this.manufacturerName = manufacturerName;
+		 this.productName = productName;
+		 this.studentNumber = studentNumber;
+		 this.studentName = studentName;
+		 this.studentEmail = studentEmail;
+		 this.organizationName = organizationName;
 		 this.checkoutDate = checkoutDate;
 		 this.checkinDate = checkinDate;
 	 }
-	 
+	  
  }
  
  
@@ -125,6 +140,9 @@ function databaseCheckout()
 {
 	var QR_Code = $("#QR_Checkout").val();
 	var StudentNumber = $("#Student_Checkout").val();
+	var StudentName = $("#Student_Name").val();
+	var OrganizationName = $("#Organization_Name").val();
+	var Email = $("#Email").val();
 	var returnValue = 5;
 	
 	 $.ajax({
@@ -133,6 +151,9 @@ function databaseCheckout()
          data: {
              'QR_Code': QR_Code,
              'StudentNumber': StudentNumber,
+             'StudentName': StudentName,
+             'OrganizationName': OrganizationName,
+             'Email': Email,
              'password': userPassword,
           
          },
@@ -348,7 +369,10 @@ function adminDataLoad(sortCriteria)
 	adminTableOrder = adminTableOrder * -1;
 	var manufactureString = $("#adminManufacturer").val();
 	var productString = $("#adminProduct").val();
+	var studentName = $("#adminStudentName").val();
 	var studentNumber = $("#adminStudentNumber").val();
+	var organizationName = $("#adminOrganization").val();
+	var email = $("#adminEmail").val();
 	var productNumber = $("#adminProductNumber").val();
 	var transactionNumber = $("#adminTransactionNumber").val();
 	var filterStatus = 2;
@@ -365,9 +389,12 @@ function adminDataLoad(sortCriteria)
 		{
 		'TransactionNumber': transactionNumber,
 		'ProductNumber': productNumber,
-		'StudentNumber': studentNumber,
 		'manufacturer': manufactureString,
 		'product': productString,
+		'studentName' : studentName,
+		'studentNumber': studentNumber,
+		'organizationName' : organizationName,
+		'email' : email,
 		'filterStatus': filterStatus,
 		'password': userPassword,
 		'sortOrder': finalSort,
@@ -398,16 +425,22 @@ function adminDataLoad(sortCriteria)
 				var cell5 = row.insertCell(4);
 				var cell6 = row.insertCell(5);
 				var cell7 = row.insertCell(6);
+				var cell8 = row.insertCell(7);
+				var cell9 = row.insertCell(8);
+				var cell10 = row.insertCell(9);
 				
-				cell1.innerHTML = adminArray[index].TransactionNumber;
+				cell1.innerHTML = adminArray[index].transactionNumber;
 				cell2.innerHTML = adminArray[index].QR_Code;
-				cell3.innerHTML = adminArray[index].ManufacturerName;
-				cell4.innerHTML = adminArray[index].ProductName;
+				cell3.innerHTML = adminArray[index].manufacturerName;
+				cell4.innerHTML = adminArray[index].productName;
 				
 				
-				cell5.innerHTML = adminArray[index].currentUser;
-				cell6.innerHTML = adminArray[index].checkoutDate;
-				cell7.innerHTML = adminArray[index].checkinDate;
+				cell5.innerHTML = adminArray[index].studentName;
+				cell6.innerHTML = adminArray[index].studentNumber;
+				cell7.innerHTML = adminArray[index].studentEmail;
+				cell8.innerHTML = adminArray[index].organizationName;
+				cell9.innerHTML = adminArray[index].checkoutDate;
+				cell10.innerHTML = adminArray[index].checkinDate;
 			}
 			
 			
@@ -469,6 +502,9 @@ QR Code: <input type = "text" id = "QR_Delete"><br>
 <form>
 QR Code: <input type = "text" id = "QR_Checkout"><br>
 Student Number: <input type = "text" id = "Student_Checkout"><br>
+Student Name: <input type = "text" id = "Student_Name"><br>
+Organization Name (optional): <input type = "text" id = "Organization_Name"><br>
+Email (optional): <input type = "text" id = "Email"><br>
 <input id = "button2" type = "button" onclick = "databaseCheckout()" value = "Submit">
 </form>
 <br>
@@ -522,7 +558,10 @@ Transaction Number: <input type = "text" id = "adminTransactionNumber"><br>
 Product Number: <input type = "text" id = "adminProductNumber"><br>
 Manufacturer: <input type = "text" id = "adminManufacturer"><br>
 Product: <input type = "text" id = "adminProduct"><br>
+Student Name: <input type = "text" id = "adminStudentName"><br>
 Student Number: <input type = "text" id = "adminStudentNumber"><br>
+Organization Name: <input type = "text" id = "adminOrganization"><br>
+Email Address: <input type = "text" id = "adminEmail"><br>
 Show All Transactions: <input type = "radio" name = "filterStatus" id = "adminAll" checked = "checked">
 <br>
 Show Only Completed Transactions <input type = "radio" name = "filterStatus" id = "adminCompleted">
@@ -541,9 +580,12 @@ Show Only Transactions That Are Ongoing (where the product is still checked out)
 <th onclick = "adminDataLoad('B')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Product Number:   </th>
 <th onclick = "adminDataLoad('C')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Manufacturer Name</th>
 <th onclick = "adminDataLoad('D')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Product Name </th>
-<th onclick = "adminDataLoad('E')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Student Number  </th>
-<th onclick = "adminDataLoad('F')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Checkout Date </th>
-<th onclick = "adminDataLoad('G')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Checkin Date  </th>
+<th onclick = "adminDataLoad('E')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Student Name  </th>
+<th onclick = "adminDataLoad('F')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Student Number  </th>
+<th onclick = "adminDataLoad('G')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Email Address </th>
+<th onclick = "adminDataLoad('H')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Organization Name </th>
+<th onclick = "adminDataLoad('I')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Checkout Date </th>
+<th onclick = "adminDataLoad('J')" style = "cursor: pointer; padding-left: 1vw; padding-right: 1vw;">Checkin Date  </th>
 </tr>
 </thead>
 <tbody id = "adminTableBody">
