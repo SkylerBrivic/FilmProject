@@ -456,7 +456,13 @@ function adminDataLoad(sortCriteria)
 }
 
 </script>
-
+<style>
+ h1, h2, h3{
+ 	color: Tomato;
+ }
+ 
+ 
+</style>
 
 
 <meta charset="UTF-8">
