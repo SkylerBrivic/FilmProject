@@ -21,7 +21,7 @@ public boolean validate(String userPassword)
 	{	
 	}
 	
-	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, databasePassword))
+	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, databasePassword))
 	{
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery("SELECT * from PasswordTable;");
@@ -37,7 +37,9 @@ public boolean validate(String userPassword)
 	
 }
 	catch(SQLException e)
-	{}
+	{
+		e.printStackTrace();
+	}
 	
 	return false;
 	

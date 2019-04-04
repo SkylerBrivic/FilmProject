@@ -61,7 +61,7 @@ public class DeleteProduct extends HttpServlet {
 		{	
 		}
 		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, password))
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
 		{
 			Statement statement = connection.createStatement();
 			String myQuery = "Select * from " + productTable + " where QR_Code = " + QR_Code + ";" ;

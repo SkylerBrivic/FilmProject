@@ -57,7 +57,7 @@ public class ChangePassword extends HttpServlet {
 		{	
 		}
 		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, password))
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
 		{
 			Statement statement = connection.createStatement();
 			statement.executeUpdate("UPDATE " + passwordTable + " SET Password = '" + newPassword + "';");

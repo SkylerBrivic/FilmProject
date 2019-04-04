@@ -65,7 +65,7 @@ public class AddProduct extends HttpServlet {
 		{	
 		}
 		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, password))
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
 		{
 			Statement statement = connection.createStatement();
 			

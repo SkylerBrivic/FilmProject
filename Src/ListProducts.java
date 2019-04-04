@@ -38,8 +38,8 @@ public class ListProducts extends HttpServlet {
 	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String tempQR, tempProduct, tempManufacturer, tempOutDate;
-		tempOutDate = "";
+		String tempQR, tempProduct, tempManufacturer, tempOutDate, tempInDate;
+		tempOutDate = tempInDate = "";
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		
 		
@@ -69,7 +69,7 @@ public class ListProducts extends HttpServlet {
 		{	
 		}
 		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, password))
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
 		{
 			Statement statement = connection.createStatement();
 			ResultSet mainResultSet = statement.executeQuery("SELECT * FROM " + productTable + ";");
@@ -89,6 +89,7 @@ public class ListProducts extends HttpServlet {
 						
 						while(tempResultSet.next())
 						{
+							tempInDate = tempResultSet.getString(5);
 							tempOutDate = tempResultSet.getString(4);
 						}
 					}
@@ -98,7 +99,9 @@ public class ListProducts extends HttpServlet {
 						tempOutDate = "N/A";
 					}
 					
-					productList.add(new Product(tempQR, "", tempProduct, tempManufacturer, "N/A", tempOutDate, "N/A"));
+					if(tempInDate == null)
+						tempInDate = "N/A";
+					productList.add(new Product(tempQR, tempManufacturer, tempProduct, tempOutDate, tempInDate));
 				}
 				
 				}

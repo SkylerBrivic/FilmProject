@@ -4,8 +4,11 @@ public class KeywordMatcher
 	 public boolean matchDataStrings(String longString, String smallerString)
 	    {
 	    	int longStringIndex = 0, smallStringIndex = 0;
-	    	if(smallerString == null || smallerString.equals("") || longString == null || longString.equals(""))
+	    	if(smallerString == null || smallerString.equals(""))
 	    		return true;
+	    	
+	    	if(longString == null || longString.equals(""))
+	    		return false;
 	    	
 	    	String newLongString = longString.trim().replaceAll("'", "").toUpperCase();
 	    	String newShortString = smallerString.trim().replaceAll("'",  "").toUpperCase();

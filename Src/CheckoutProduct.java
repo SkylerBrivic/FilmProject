@@ -38,14 +38,19 @@ public class CheckoutProduct extends HttpServlet {
 		String password = "PondFish";
 		String productTable = "productList";
 		String checkoutTable = "checkoutList";
+		String studentTable = "studentList";
 		int availabilityStatus = -1;
 		
 
 		String QR_Code = request.getParameter("QR_Code");
 		String studentNumber = request.getParameter("StudentNumber");
+		String studentName = request.getParameter("StudentName");
+		String organizationName = request.getParameter("OrganizationName");
+		String email = request.getParameter("Email");
 		
 		String userPassword = request.getParameter("password");
 		
+		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		PasswordValidator validator = new PasswordValidator();
 		
 		if(validator.validate(userPassword) == false)
@@ -62,7 +67,7 @@ public class CheckoutProduct extends HttpServlet {
 		{	
 		}
 		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, userName, password))
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
 		{
 			Statement statement = connection.createStatement();
 			String myQuery = "Select * from " + productTable + " where QR_Code = " + QR_Code + ";" ;
@@ -83,8 +88,37 @@ public class CheckoutProduct extends HttpServlet {
 				myQuery = "UPDATE " + productTable + " set isAvailable = 0 where QR_Code = " + QR_Code + ";";
 				statement.executeUpdate(myQuery);
 				
+				Statement otherStatement = connection.createStatement();
+				ResultSet otherSet = otherStatement.executeQuery("SELECT * FROM " + studentTable + " WHERE studentNumber = '" + studentNumber + "'");
+			
+				if(!otherSet.next())
+				{
+					myQuery = "INSERT INTO " + studentTable + " VALUES( ";
+					if(keywordMatcher.isEmpty(studentNumber))
+						myQuery += " null, ";
+					else myQuery += ("'" + studentNumber + "', ");
+					
+					myQuery += ("'" + studentName + "', ");
+					
+					if(keywordMatcher.isEmpty(organizationName))
+						myQuery += "null, ";
+					else
+						myQuery += ("'" + organizationName + "', ");
+					
+					if(keywordMatcher.isEmpty(email))
+						myQuery += "null);";
+					else
+						myQuery += ("'" + email + "');");
+					
+					otherStatement.executeUpdate(myQuery);
+					
+					
+				}
+				
+				
 				myQuery = "INSERT INTO " + checkoutTable + "(QR_Code, StudentNumber, checkoutDate, checkinDate) Values(" + QR_Code + ", '" + studentNumber + "', CURRENT_DATE(), null);";
 				statement.executeUpdate(myQuery);
+				
 				
 				response.getWriter().println("0");
 				return;	
