@@ -457,18 +457,63 @@ function adminDataLoad(sortCriteria)
 
 </script>
 <style>
- h1, h2, h3{
+/* sidebar navigation */
+ ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+	background-color: white;
+	height: 100%;
+	position: fixed;
+	overflow: auto;
+ }
+
+ /* buttons on side bar */
+ li a {
+	display: block;
+	color: black;
+	padding: 8px 16px;
+	text-decoration: none;
+ }
+ 
+ /* sidebar active button */
+ li a.active {
+	background-color: crimson;
+	color: white;
+ }
+
+ /* sidebar hover over non-active button */
+ li a:hover:not(.active) {
+	background-color: dimgrey;
+	color: white;
+ }
+
+ body{
+ 	background-color: #f0f0f0;
+ 	
+ }
+
+ h1, h2, h3, h4, h5{
  	color: Tomato;
  }
  
- 
+
 </style>
 
 
 <meta charset="UTF-8">
-<title>Test Page</title>
+<title>Little Center Inventory System</title>
 </head>
 <body>
+
+<ul>
+ <li><a href="#admin">Admin</a></li>
+ <li><a href="#checkinout">Check In/Out</a>
+ <li><a href="#equipment">Equipment</a></li>
+</ul>
+
+<div id = "admin"></div>
 
 <h3>Log in here to add or remove products from the database or to check products in and out: </h3>
 <form>
@@ -487,7 +532,6 @@ New Password: <input type = "text" id = "newPassword"><br>
 </form>
 <br><br>
 
-
 <h3>Add Products Here: </h3>
 <form>
 Manufacturer: <input type = "text" id = "manufacturerAdd"><br>
@@ -503,6 +547,7 @@ QR Code: <input type = "text" id = "QR_Delete"><br>
 </form>
 <br><br>
 
+<div id = "checkinout"></div>
 
 <h3>Checkout Products Here: </h3>
 <form>
@@ -529,6 +574,8 @@ Product: <input type = "text" id = "productUpdate"><br>
 <input id = "button3" type = "button" onclick = "databaseUpdate()" value = "Submit">
 </form>
 <br><br>
+
+<div id = "Equipment"></div>
 
 <h3>Here is a view of the products for students and non-administrators: </h3>
 <h5>Use the search feature below to fine-tune your search for products</h5>
