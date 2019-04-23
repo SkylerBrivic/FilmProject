@@ -1,3 +1,6 @@
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -6,10 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.gson.Gson;
-
-
-import java.sql.*;
+import com.google.gson.*;
 
 
 @WebServlet("/ListProducts")
@@ -38,121 +38,93 @@ public class ListProducts extends HttpServlet {
 	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String tempQR, tempProduct, tempManufacturer, tempOutDate, tempInDate;
-		tempOutDate = tempInDate = "";
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		
-		
-		ArrayList<Product> productList = new ArrayList<Product>();
-		ProductComparator productComparator = new ProductComparator();
-
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String productTable = "productList";
-		String checkoutTable = "checkoutList";
-		
-		String manufactureSearchString = request.getParameter("manufacturer");
-		String productSearchString = request.getParameter("product");
-		boolean showAll = true;
-		if(Boolean.parseBoolean(request.getParameter("filterOn")) == true)
-			showAll = false;
-			
 		String sortOrder = request.getParameter("sortOrder");
+		String manufacturer = request.getParameter("manufacturer");
+		String product = request.getParameter("product");
+		ArrayList<Product> productList = new ArrayList<Product>();
+		ArrayList<Product> allProducts = null;
+		ArrayList<ProductAggregate> finalProductList = new ArrayList<ProductAggregate>();
+		ProductComparator productComparator = new ProductComparator();
+		ProductAggregateComparator productAggregateComparator = new ProductAggregateComparator();
+		DatabaseInterface databaseInterface = new DatabaseInterface();
+		allProducts = databaseInterface.selectProduct("");
 		
-		try {
-		Class.forName("com.mysql.jdbc.Driver");
-		}
-		
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
+		for(int i = 0; i < allProducts.size(); ++i)
 		{
-			Statement statement = connection.createStatement();
-			ResultSet mainResultSet = statement.executeQuery("SELECT * FROM " + productTable + ";");
-			while(mainResultSet.next())
+			if(manufacturer != null && !keywordMatcher.isEmpty(manufacturer) && !keywordMatcher.matchDataStrings(allProducts.get(i).ManufacturerName, manufacturer))
+				continue;
+			if(product != null && !keywordMatcher.isEmpty(product) && !keywordMatcher.matchDataStrings(allProducts.get(i).ProductName, product))
+				continue;	
+			productList.add(allProducts.get(i));	
+		}
+
+	Collections.sort(productList, productComparator.new SortByProductNameLow());
+	Collections.sort(productList, productComparator.new SortByManufacturerNameLow());
+	boolean firstEntryOfKind = true;
+	for(int i = 0; i < productList.size(); ++i)
+	{
+		if(firstEntryOfKind)
+		{
+			if(productList.get(i).checkoutDate.equals("N/A"))
+			finalProductList.add(new ProductAggregate(productList.get(i).ProductName, productList.get(i).ManufacturerName, 1, 1));
+			else
+			finalProductList.add(new ProductAggregate(productList.get(i).ProductName, productList.get(i).ManufacturerName, 0, 1));
+			firstEntryOfKind = false;
+		}
+		else
+		{
+			if(finalProductList.get(finalProductList.size() - 1).Manufacturer.equalsIgnoreCase(productList.get(i).ManufacturerName) && finalProductList.get(finalProductList.size() - 1).ProductName.equalsIgnoreCase(productList.get(i).ProductName))
 			{
-				if(showAll == true || Integer.parseInt(mainResultSet.getString(4)) == 1)
-				{
-				tempManufacturer = mainResultSet.getString(2);
-				tempProduct = mainResultSet.getString(3);
-				if(keywordMatcher.matchDataStrings(tempManufacturer, manufactureSearchString) && keywordMatcher.matchDataStrings(tempProduct, productSearchString))
-				{
-					tempQR = mainResultSet.getString(1);
-					if(Integer.parseInt(mainResultSet.getString(4)) == 0)
-					{
-						Statement otherStatement = connection.createStatement();
-						ResultSet tempResultSet = otherStatement.executeQuery("SELECT * FROM " + checkoutTable + " WHERE QR_Code = " + tempQR + " AND checkinDate IS NULL;");
-						
-						while(tempResultSet.next())
-						{
-							tempInDate = tempResultSet.getString(5);
-							tempOutDate = tempResultSet.getString(4);
-						}
-					}
-					else
-					{
-					
-						tempOutDate = "N/A";
-					}
-					
-					if(tempInDate == null)
-						tempInDate = "N/A";
-					productList.add(new Product(tempQR, tempManufacturer, tempProduct, tempOutDate, tempInDate));
-				}
-				
-				}
+						if(productList.get(i).checkoutDate.equalsIgnoreCase("N/A"))
+						finalProductList.get(finalProductList.size()-1).numAvailable++;
+					finalProductList.get(finalProductList.size() - 1).numInStock++;
 			}
-			
-			
+			else
+			{
+				if(productList.get(i).checkoutDate.equals("N/A"))
+				finalProductList.add(new ProductAggregate(productList.get(i).ProductName, productList.get(i).ManufacturerName, 1, 1));
+				else
+					finalProductList.add(new ProductAggregate(productList.get(i).ProductName, productList.get(i).ManufacturerName, 0, 1));
+
+				
+			}
 		}
 		
-		
-		
-		catch(SQLException e)
+		if(i < productList.size() - 1)
 		{
+			if(productList.get(i).ManufacturerName.equalsIgnoreCase(productList.get(i+1).ManufacturerName) && productList.get(i).ProductName.equalsIgnoreCase(productList.get(i+1).ManufacturerName))
+				firstEntryOfKind = true;
 		}
+		
+	}
 		
 		char sortCriteria = sortOrder.charAt(0);
 
 		if(Integer.parseInt(sortOrder.substring(1)) == 1)
 		{
 		if(sortCriteria == 'A')
-			Collections.sort(productList,  productComparator.new SortByProductNumLow());
+			Collections.sort(finalProductList,  productAggregateComparator.new SortByProductNameLow());
 		else if(sortCriteria == 'B')
-			Collections.sort(productList, productComparator.new SortByManufacturerNameLow());
-		else if(sortCriteria == 'C')
-			Collections.sort(productList,  productComparator.new SortByProductNameLow());
-		else if(sortCriteria == 'D')
-			Collections.sort(productList,  productComparator.new SortByCheckoutDateLow());
-		else
-			Collections.sort(productList,  productComparator.new SortByCheckoutDateLow());
+			Collections.sort(finalProductList, productAggregateComparator.new SortByManufacturerNameLow());
+		
 		}
 		else
 		{
 			if(sortCriteria == 'A')
-				Collections.sort(productList,  productComparator.new SortByProductNumHigh());
+				Collections.sort(finalProductList,  productAggregateComparator.new SortByProductNameHigh());
 			else if(sortCriteria == 'B')
-				Collections.sort(productList, productComparator.new SortByManufacturerNameHigh());
-			else if(sortCriteria == 'C')
-				Collections.sort(productList,  productComparator.new SortByProductNameHigh());
-			else if(sortCriteria == 'D')
-				Collections.sort(productList,  productComparator.new SortByCheckoutDateHigh());
-			else
-				Collections.sort(productList,  productComparator.new SortByCheckoutDateHigh());
+				Collections.sort(finalProductList, productAggregateComparator.new SortByManufacturerNameHigh());
 			
 			
 		}
 		
 		Gson gson = new Gson();
-		String returnString = gson.toJson(productList);
+		String returnString = gson.toJson(finalProductList);
 		response.getWriter().println(returnString);
 		
 		
 	}
 
 }
-
