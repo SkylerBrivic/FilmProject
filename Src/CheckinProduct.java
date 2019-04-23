@@ -1,3 +1,6 @@
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.sql.*;
+import java.util.ArrayList;
 
 
 @WebServlet("/CheckinProduct")
@@ -35,74 +38,32 @@ public class CheckinProduct extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String productTable = "productList";
-		String checkoutTable = "checkoutList";
-		
-		
-		int availabilityStatus = -1;
-		String QR_Code = request.getParameter("QR_Code");
-		
-		
-		
-		String userPassword = request.getParameter("password");
-		
-		PasswordValidator validator = new PasswordValidator();
-		
-		if(validator.validate(userPassword) == false)
-		{
-			response.getWriter().println("3");
-			return;
-		}
-		
-		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
-		{
-			Statement statement = connection.createStatement();
-			String myQuery = "SELECT * from " + productTable + " Where QR_Code = " + QR_Code + ";";
-			ResultSet resultSet = statement.executeQuery(myQuery);
-			
-			while(resultSet.next())
-			{
-				availabilityStatus = Integer.parseInt(resultSet.getString(4));
-			}
-			
-			if(availabilityStatus == -1)
-			{
-				response.getWriter().println("1");
-				return;	
-			}
-			
-			else if(availabilityStatus == 1)
-			{
-				response.getWriter().println("2");
-				return;
-				
-			}
-			
-			myQuery = "UPDATE " + productTable + " set isAvailable = 1 where QR_Code = " + QR_Code + ";";
-			statement.executeUpdate(myQuery);
-			
-			myQuery = "UPDATE " + checkoutTable + " set checkinDate = CURRENT_DATE() Where QR_Code = " + QR_Code + " AND checkinDate IS NULL;";
-			statement.executeUpdate(myQuery);
-			response.getWriter().println("0");
-			
-			
-			
-		}
-		catch(SQLException e)
-		{}
-	
+	String QR_Code = request.getParameter("QR_Code");
+	String password = request.getParameter("password");
+	DatabaseInterface databaseInterface = new DatabaseInterface();
+	if(databaseInterface.validatePassword(password) == false)
+	{
+		response.getWriter().println("3");
+		return;
 	}
+	ArrayList<Product> productExistence = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+	if(productExistence.size() == 0)
+	{
+		response.getWriter().println("1");
+		return;
+		
+	}
+	
+	ArrayList<Product> productList = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code + " AND isAvailable = 0");
+	if(productList.size() == 0)
+	{
+		response.getWriter().println("2");
+		return;
+	}
+	
+	databaseInterface.checkinProduct(QR_Code);
+	response.getWriter().println("0");
+	}
+	
 
 }
