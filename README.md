@@ -4,13 +4,15 @@ The folder "textFiles" contains two files. One is a text document containing the
 The other file ("information.txt") contains the database credentials that the file DatabaseInterface.java reads in order to connect to the database
 
 The folder "webPages" contains 3 files containing  HTML, CSS and JavaScript. More specifically, each file is a jsp document (JavaServer Pages).
-The file userWelcomePage.jsp is the homepage for the site. The file login.jsp contains the login screen (for administrators) and all the administrative functions of the site, such as checking products in and out.
+The file userWelcomePage.jsp is the homepage for the site. 
+The file login.jsp contains the login screen (for administrators) and all the administrative functions of the site, such as checking products in and out.
 The file viewProducts.jsp is the page where regular users can view the inventory of all products and see which products are available.
 Note that viewProducts.jsp is currently set to output a picture of a camera for each product. More specifically, it will try to output a picture with the relative pathname "images/Camera.jpg". Of course, since this will be replaced later on by the actual pictures, you can just ignore this for now, or you can download a stock photo of a camera and give it the appropriate name so that you can see what the boxes look like with a picture in them.
 
 The folder "Src" contains two folders, which are the names of the two java packages that hold all the java files used for the backend of the website. The first package in "Src" is called filmObjects, and the second package in "Src" is called filmProjectServlets.
 
-The filmObjects package contains 8 java files which contain objects that are used by the servlets (however, none of the java files in this package are servlets - they are all regular object files). The first file is DatabaseInterface.java. This class allows a user to connect to the mySql database using the credentials in the file information.txt. It is the file that all the servlets depend on to be able to access the database. 
+The filmObjects package contains 8 java files which contain objects that are used by the servlets (however, none of the java files in this package are servlets - they are all regular object files). 
+The first file is DatabaseInterface.java. This class allows a user to connect to the mySql database using the credentials in the file information.txt. It is the file that all the servlets depend on to be able to access the database. 
 KeywordMatcher.java creates an object of type KeywordMatcher, which can check if a String is empty (if it contains only whitespace or no characters) using the method isEmpty,
 or can use the method matchDataStrings to compare two Strings to see if the second string appears in its entirety anywhere in the first string
 Product is an object with 5 String variables - QR Code, Manufacturer, Product Name, Checkout Date, and checkinDate. It is used
