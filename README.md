@@ -4,6 +4,8 @@ The folder "textFiles" contains two files. One is a text document containing the
 
 The other file ("information.txt") contains the database credentials that the file DatabaseInterface.java reads in order to connect to the database
 
+IMPORTANT NOTE: The file queryGenerator.java takes as input a text file where each line is of the form manufacturer name|product name|quantity. It outputs a text file containing the MySQL queries that would insert those elements into the database. The program will prompt you for the absolute pathnames of input and output files.
+
 The folder "webPages" contains 3 files containing  HTML, CSS and JavaScript. More specifically, each file is a jsp document (JavaServer Pages).
 
 The file userWelcomePage.jsp is the homepage for the site. 
