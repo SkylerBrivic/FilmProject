@@ -504,7 +504,7 @@ function changePasswordFeatureLoad()
 .headerLink:hover{background-color: orange;}
 .linkFormat{color: white; text-decoration: none;}
 .headingFormat{position: relative; top: 2vw; left: 45vw; color: black; font-family: Heveltica; size: 2vw;}
-.footer{margin-left: 30vw; position: fixed; bottom: 0vw; color: navy; font-family: "Times New Roman";}
+.footer{margin-left: 30vw; color: navy; font-family: "Times New Roman";}
 p{font-family: Heveltica;}
 table, tr, th{background-color: white;}
 
