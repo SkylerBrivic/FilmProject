@@ -1,3 +1,6 @@
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.sql.*;
+import java.util.ArrayList;
 
 
 @WebServlet("/DeleteProduct")
@@ -32,64 +35,24 @@ public class DeleteProduct extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String productTable = "productList";
-		String checkoutTable = "checkoutList";
-		
-		
-		String QR_Code = request.getParameter("QR_Code");
-		boolean isValidCode = false;
-		
-		String userPassword = request.getParameter("password");
-		
-		PasswordValidator validator = new PasswordValidator();
-		
-		if(validator.validate(userPassword) == false)
-		{
-			response.getWriter().println("2");
-			return;
-		}
-		
-		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
-		{
-			Statement statement = connection.createStatement();
-			String myQuery = "Select * from " + productTable + " where QR_Code = " + QR_Code + ";" ;
-			ResultSet resultSet = statement.executeQuery(myQuery);
-			
-			while(resultSet.next())
-			{
-				isValidCode = true;
-			}
-			
-		if(!isValidCode)
-		{
-			response.getWriter().println("1");
-			return;
-		}
-		
-		myQuery = "DELETE FROM " + checkoutTable + " where QR_Code = " + QR_Code + ";";
-		statement.executeUpdate(myQuery);
-		
-		myQuery = "DELETE FROM " + productTable + " where QR_Code = " + QR_Code + ";";
-		statement.executeUpdate(myQuery);
-		
-		response.getWriter().println("0");	
+	String QR_Code = request.getParameter("QR_Code");
+	String password = request.getParameter("password");
+	DatabaseInterface databaseInterface = new DatabaseInterface();
+	if(databaseInterface.validatePassword(password) == false)
+	{
+		response.getWriter().println("2");
+		return;
 	}
+	
+	ArrayList<Product> myProduct = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+	if(myProduct.size() == 0)
+	{
+		response.getWriter().println("1");
+		return;
+	}
+	databaseInterface.deleteProduct(QR_Code);
+	response.getWriter().println("0");
 		
-		catch(SQLException e)
-		{}
-
-}
+	}
 }
 
