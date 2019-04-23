@@ -1,3 +1,6 @@
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.sql.*;
+import java.util.ArrayList;
 
 
 @WebServlet("/CheckoutProduct")
@@ -29,118 +32,42 @@ public class CheckoutProduct extends HttpServlet {
 	//a return value of 1 means the specified QR Code was invalid
 	//a return value of 2 means that the product is already checked out by somebody else
 	//a return value of 3 means the user does not have permission to check this product out (due to an invalid password)
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String productTable = "productList";
-		String checkoutTable = "checkoutList";
-		String studentTable = "studentList";
-		int availabilityStatus = -1;
-		
-
+	{		
 		String QR_Code = request.getParameter("QR_Code");
 		String studentNumber = request.getParameter("StudentNumber");
 		String studentName = request.getParameter("StudentName");
 		String organizationName = request.getParameter("OrganizationName");
 		String email = request.getParameter("Email");
-		
 		String userPassword = request.getParameter("password");
-		
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
-		PasswordValidator validator = new PasswordValidator();
-		
-		if(validator.validate(userPassword) == false)
+		DatabaseInterface databaseInterface = new DatabaseInterface();
+		if(databaseInterface.validatePassword(userPassword) == false)
 		{
 			response.getWriter().println("3");
 			return;
 		}
-		
-		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
+		ArrayList<Product> productCheck = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+		if(productCheck.size() == 0)
 		{
-			Statement statement = connection.createStatement();
-			String myQuery = "Select * from " + productTable + " where QR_Code = " + QR_Code + ";" ;
-			ResultSet resultSet = statement.executeQuery(myQuery);
-			
-			while(resultSet.next())
-			{
-				availabilityStatus = Integer.parseInt(resultSet.getString(4));
-			}
-			
-			if(availabilityStatus == -1)
-			{
-				response.getWriter().println("1");
-				return;
-			}
-			else if(availabilityStatus == 1)
-			{
-				myQuery = "UPDATE " + productTable + " set isAvailable = 0 where QR_Code = " + QR_Code + ";";
-				statement.executeUpdate(myQuery);
-				
-				Statement otherStatement = connection.createStatement();
-				ResultSet otherSet = otherStatement.executeQuery("SELECT * FROM " + studentTable + " WHERE studentNumber = '" + studentNumber + "'");
-			
-				if(!otherSet.next())
-				{
-					myQuery = "INSERT INTO " + studentTable + " VALUES( ";
-					if(keywordMatcher.isEmpty(studentNumber))
-						myQuery += " null, ";
-					else myQuery += ("'" + studentNumber + "', ");
-					
-					myQuery += ("'" + studentName + "', ");
-					
-					if(keywordMatcher.isEmpty(organizationName))
-						myQuery += "null, ";
-					else
-						myQuery += ("'" + organizationName + "', ");
-					
-					if(keywordMatcher.isEmpty(email))
-						myQuery += "null);";
-					else
-						myQuery += ("'" + email + "');");
-					
-					otherStatement.executeUpdate(myQuery);
-					
-					
-				}
-				
-				
-				myQuery = "INSERT INTO " + checkoutTable + "(QR_Code, StudentNumber, checkoutDate, checkinDate) Values(" + QR_Code + ", '" + studentNumber + "', CURRENT_DATE(), null);";
-				statement.executeUpdate(myQuery);
-				
-				
-				response.getWriter().println("0");
-				return;	
-			}
-			
-			else 
-			{
-				response.getWriter().println("2");
-				return;
-			}
-				
+			response.getWriter().println("1");
+			return;
 		}
-		
-		
-		
-		
-		catch(SQLException e)
+		if(!productCheck.get(0).checkoutDate.equals("N/A"))
 		{
+			response.getWriter().println("2");
+			return;
 		}
+		if(studentNumber == null || keywordMatcher.isEmpty(studentNumber))
+			studentNumber = "N/A";
+		if(studentName == null || keywordMatcher.isEmpty(studentName))
+			studentName = "N/A";
+		if(organizationName == null || keywordMatcher.isEmpty(organizationName))
+			organizationName = "N/A";
+		if(email == null || keywordMatcher.isEmpty(email))
+			email = "N/A";
 		
-		
-		
+		databaseInterface.checkoutProduct(QR_Code, studentNumber, studentName, organizationName, email);
+		response.getWriter().println("0");
 	}
-
 }
