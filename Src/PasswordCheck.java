@@ -1,3 +1,6 @@
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -30,8 +33,8 @@ public class PasswordCheck extends HttpServlet {
 	{
 		
 		String userPassword = request.getParameter("password");
-		PasswordValidator validator = new PasswordValidator();
-		if(validator.validate(userPassword) == true)
+		DatabaseInterface databaseInterface = new DatabaseInterface();
+		if(databaseInterface.validatePassword(userPassword) == true)
 			response.getWriter().println("1");
 		else
 			response.getWriter().println("0");
@@ -40,3 +43,4 @@ public class PasswordCheck extends HttpServlet {
 	}
 
 }
+
