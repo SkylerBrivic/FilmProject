@@ -42,7 +42,9 @@ public void convert()
 	}
 	}
 	catch(IOException e)
-	{}
+	{
+		e.printStackTrace();
+	}
 	myWriter.close();
 	
 }
