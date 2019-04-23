@@ -1,0 +1,15 @@
+Create database FilmProject;
+
+Use FilmProject;
+
+create TABLE ProductList ( QR_Code int PRIMARY KEY AUTO_INCREMENT, manufacturer varchar(255), productName varchar(255), isAvailable tinyint(1));
+
+create Table studentList (StudentNumber varchar(255) PRIMARY KEY, StudentName varchar(255), OrganizationName varchar(255), Email varchar(255));
+
+create Table checkoutList ( transactionNumber int PRIMARY KEY AUTO_INCREMENT, QR_Code int, StudentNumber varchar(255), checkoutDate DATE, checkinDate DATE, FOREIGN KEY (QR_Code) REFERENCES ProductList(QR_Code), FOREIGN KEY checkoutList(StudentNumber) REFERENCES studentList(StudentNumber));
+
+
+
+Create Table PasswordTable(Password varchar(256));
+
+Insert into PasswordTable Values('CoyFish');
