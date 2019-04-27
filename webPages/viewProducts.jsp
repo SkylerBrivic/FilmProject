@@ -55,10 +55,10 @@ class Transaction
 var tableSortOrder = 1;
 $( document ).ready(function()
 	{
-	populateTable("", "", false, 'A');
+	populateTable("", "", 'A');
 	});
 	
-function populateTable(manufacturer, product, filterOn, sortLetter)
+function populateTable(manufacturer, product, sortLetter)
 {
 	var sortCriteria = sortLetter + tableSortOrder.toString();
 	tableSortOrder = tableSortOrder * -1;
@@ -69,7 +69,6 @@ function populateTable(manufacturer, product, filterOn, sortLetter)
 		data: {
 			'manufacturer': manufacturer,
 			'product': product,
-			'filterOn': filterOn,
 			'sortOrder': sortCriteria,
 		},
 		success: function(data)
@@ -86,7 +85,7 @@ function populateTable(manufacturer, product, filterOn, sortLetter)
 			if(i % 4 == 0)
 			row = TableBody.insertRow();
 			cell1 = row.insertCell(0);	
-			cellInnerHTMLString = "<div class = 'ProductFormatBox'><div class = 'boxTitle'>" + productArray[i].ProductName + "</div><img style = 'margin-left: 4.5vw;' src = 'images/Camera.jpg' alt = 'Product Image' max-height = '50%' width = '50%'><div class = 'boxManufacturer'>Made by " + productArray[i].Manufacturer + "</div>"
+			cellInnerHTMLString = "<div class = 'ProductFormatBox'><div class = 'boxTitle'>" + productArray[i].ProductName + "</div><img style = 'margin-left: 3vw; margin-right: 3vw;' src = 'images/" + productArray[i].Manufacturer + "_" + productArray[i].ProductName + ".jpg' alt = 'Product Image Not Available' height = '200px' width = '200px'><div class = 'boxManufacturer'>Made by " + productArray[i].Manufacturer + "</div>"
 			+ "<div class = 'numInStock'>Number in Inventory: " + productArray[i].numInStock;
 			if(productArray[i].numAvailable == 0)
 				cellInnerHTMLString += "<div class = 'numAvailable' style = 'color: red'>";
@@ -106,6 +105,14 @@ function populateTable(manufacturer, product, filterOn, sortLetter)
 });
 	
 }
+
+function populateTableHelper()
+{
+	var manufacturerName = $("#manufacturerText").val();
+	var productName = $("#productNameText").val();
+	populateTable(manufacturerName, productName, 'A');
+}
+
 </script>
 <meta charset="UTF-8">
 <title>Inventory View</title>
@@ -125,6 +132,12 @@ function populateTable(manufacturer, product, filterOn, sortLetter)
 </div>
 </header>
 <h1 class = "headingFormat">View Products: </h1>
+<h5>Type in a product name or manufacturer name to narrow your search for products.</h5>
+<form>
+Manufacturer Name: <input type = "text" id = "manufacturerText" style = "margin-right: 3vw;">
+Product Name: <input type = "text" id = "productNameText"><br>
+<input type = "button" onclick = "populateTableHelper()" value = "Search"><br>
+</form>
 <table style = "border-style: none;">
 <tbody id = "tableStart">
 </tbody>
