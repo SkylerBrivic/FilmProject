@@ -511,7 +511,7 @@ table, tr, th{background-color: white;}
 
 </style>
 </head>
-<body style = "background-color: Ivory;">
+<body style = "background-color: Ivory; font-size: 1.20vw; font-family: 'Heveltica'">
 <header>
 <div class = "headerBanner">
 		<div class = "headerLink">
@@ -528,7 +528,7 @@ table, tr, th{background-color: white;}
 
 <h1 style = "position: relative; top: 2vw;">Enter the Site Password Here: </h1><br>
 <form>
-Site Password: <input type = "text" id = "Password"><br>
+Site Password: <input type = "text" id = "Password" style = "margin-left: 0.2vw;"><br>
 <input id = "submitButton" type = "button" onclick = "databaseLogin()" value = "Submit">
 </form>
 <br>
@@ -537,24 +537,24 @@ Site Password: <input type = "text" id = "Password"><br>
 <div id = "featureSelect" style = "display: none;">
 <form>
 <br>
-Checkout Product: <input type = "radio" name = "featureOption" onclick = "checkoutProductFeatureLoad()" checked = "checked" style = "margin-right: 11.8vw;">
-Check In Product: <input type = "radio" name = "featureOption" onclick = "checkinProductFeatureLoad()"><br>
-List All Transactions: <input type = "radio" name = "featureOption" onclick = "productSearchFeatureLoad()" style = "margin-right: 11.8vw;">
- Add a Product to the Database: <input type = "radio" name = "featureOption" onclick = "addFeatureLoad()" ><br>
- Delete a Product from the Database: <input type = "radio" name = "featureOption" onclick = "deleteFeatureLoad()" style = "margin-right: 5vw;">
- Update the Product Name and Manufacturer Name of a Product in the Database: <input type = "radio" name = "featureOption" onclick = "updateFeatureLoad()"><br>
- Change Site Password: <input type = "radio" name = "featureOption" onclick = "changePasswordFeatureLoad()"><br>
+<input type = "radio" name = "featureOption" onclick = "checkoutProductFeatureLoad()" checked = "checked" style = "margin-right: 0.70vw;">Checkout Product
+<input type = "radio" name = "featureOption" onclick = "checkinProductFeatureLoad()" style = "margin-left: 12vw; margin-right: 0.70vw;" >Check In Product<br>
+<input type = "radio" name = "featureOption" onclick = "productSearchFeatureLoad()" style = "margin-right: 0.70vw;">List All Transactions
+<input type = "radio" name = "featureOption" onclick = "addFeatureLoad()" style = "margin-right: 0.70vw; margin-left: 10.6vw;">Add a Product to the Database<br>
+<input type = "radio" name = "featureOption" onclick = "updateFeatureLoad()" style = "margin-right: 0.70vw;">Update Product Information
+<input type = "radio" name = "featureOption" onclick = "deleteFeatureLoad()" style = "margin-right: 0.70vw; margin-left: 7.27vw;">Delete a Product from the Database<br>
+<input type = "radio" name = "featureOption" onclick = "changePasswordFeatureLoad()" style = "margin-right: 0.70vw;">Change Site Password<br>
 </form>
 </div>
 
 <div id = "checkoutFeature" style = "display: none;">
-<h5>Enter in the product ID number/QR Code of the product to be checked out and the information about the person checking the eqipment out: </h5>
+<h5>Enter in the product ID number/QR Code of the product to be checked out and the information about the person checking the equipment out: </h5>
 <form>
-Product ID Number/QR Code: <input type = "text" id = "checkoutQRCode"> <br>
-Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margin-right: 11.8vw;">
-Student Name: <input type = "text" id = "checkoutStudentName"><br>
-Organization Name (optional): <input type = "text" id = "checkoutOrganizationName" style = "margin-right: 11.8vw;">
-Email Address (optional): <input type = "text" id = "checkoutEmailAddress"><br>
+Product ID Number/QR Code: <input type = "text" id = "checkoutQRCode" style = "margin-left: 0.3vw;"> <br>
+Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margin-left: 6.6vw; margin-right: 11.8vw;">
+Student Name: <input type = "text" id = "checkoutStudentName" style = "margin-left: 5.38vw;"><br>
+Organization Name (optional): <input type = "text" id = "checkoutOrganizationName" style = "margin-left: 0.2vw; margin-right: 11.8vw;">
+Email Address (optional): <input type = "text" id = "checkoutEmailAddress" style = "margin-left: 0.2vw;"><br>
 <input type = "button" onclick = "databaseCheckout()" value = "Check Out">
 </form>
 </div>
@@ -563,22 +563,19 @@ Email Address (optional): <input type = "text" id = "checkoutEmailAddress"><br>
 <h5>Enter in the Product ID number/QR Code of the product to be checked back in: </h5>
 <form>
 Product ID Number/QR Code: <input type = "text" id = "checkinQRCode"><br>
-<input type = "button" onclick = "databaseCheckin()" value = "Check In">
+<input type = "button" onclick = "databaseCheckin()" style = "margin-left: 0.2vw;" value = "Check In">
 </form>
 </div>
 
 <div id = "searchFeature" style = "display: none;">
 <h5>Use the search feature to fine-tune your search</h5>
 <form>
-Transaction Number: <input style = "margin-right: 5vw;" type = "text" id = "adminTransactionNumber">Product Number: <input type = "text" id = "adminProductNumber"><br>
-Manufacturer: <input style = "margin-right: 7vw;" type = "text" id = "adminManufacturer">Product: <input type = "text" id = "adminProduct"><br>
-Student Name: <input style = "margin-right: 5vw;" type = "text" id = "adminStudentName">Student Number: <input type = "text" id = "adminStudentNumber"><br>
-Organization Name: <input style = "margin-right: 5vw;" type = "text" id = "adminOrganization">Email Address: <input type = "text" id = "adminEmail"><br>
-Show All Transactions: <input type = "radio" name = "filterStatus" id = "adminAll" checked = "checked">
-<br>
-Show Only Completed Transactions <input type = "radio" name = "filterStatus" id = "adminCompleted">
-<br>
-Show Only Transactions That Are Ongoing (where the product is still checked out): <input type = "radio" name = "filterStatus" id = "adminOngoing">
+Transaction Number: <input style = "margin-left: 0.2vw; margin-right: 9vw;" type = "text" id = "adminTransactionNumber">Product Number: <input type = "text" style = "margin-left: 0.2vw;"id = "adminProductNumber"><br>
+Manufacturer: <input style = "margin-left: 3.5vw; margin-right: 8.9vw;" type = "text" id = "adminManufacturer">Product Name: <input type = "text" style = "margin-left: 1.25vw;" id = "adminProduct"><br>
+Student Name: <input style = "margin-right: 8.9vw; margin-left: 3.2vw;" type = "text" id = "adminStudentName">Student Number: <input type = "text" style = "margin-left: 0.35vw" id = "adminStudentNumber"><br>
+Organization Name: <input style = "margin-right: 8.85vw; margin-left: 0.7vw;" type = "text" id = "adminOrganization">Email Address: <input type = "text" style = "margin-left: 1.1vw;" id = "adminEmail"><br>
+<input type = "radio" name = "filterStatus" id = "adminAll" style = "margin-right: 0.70vw" checked = "checked">Show All Transactions<input type = "radio" style = "margin-left: 17.3vw; margin-right: 0.70vw;" name = "filterStatus" id = "adminCompleted"> Show Only Completed Transactions
+<br><input type = "radio" style = "margin-right: 0.70vw;"  name = "filterStatus" id = "adminOngoing">Show Only Ongoing Transactions
 <br>
 
 <input id = "button8" type = "button" onclick = "adminDataLoad('A')" value = "Submit">
@@ -608,7 +605,7 @@ Show Only Transactions That Are Ongoing (where the product is still checked out)
 <div id = "addProducts" style = "display: none;">
 <h5>Type in the manufacturer name and the product name of the new product: </h5>
 <form>
-Manufacturer Name: <input style = "margin-right: 3vw;" type = "text" id = "addManufacturer">Product Name: <input id = "addProductName" type = "text"><br>
+Manufacturer Name: <input style = "margin-right: 3vw; margin-left: 0.2vw;" type = "text" id = "addManufacturer">Product Name: <input id = "addProductName" style = "margin-left: 0.2vw;" type = "text"><br>
 <input id = "button9" type = "button" onclick = "addProductDatabase()" value = "Submit">
 </form>
 </div>
@@ -625,8 +622,8 @@ QR Code/Product ID Number: <input type = "text" id = "deleteCode"><br>
 <div id = "updateProducts" style = "display: none;">
 <h5>Type in the QR Code/Product ID Number of the product whose information you would like to update. Then, type in what you would like the new product name and manufacturer name for his product to be</h5>
 <form>
-QR Code/Product ID Number: <input type = "text" id = "updateProductQRCode"><br>
-Manufacturer Name: <input type = "text" id = "updateManufacturerName" style = "margin-right: 5vw;">Product Name: <input type = "text" id = "updateProductName"><br>
+QR Code/Product ID Number: <input type = "text" id = "updateProductQRCode" style = "margin-left: 0.2vw;"><br>
+Manufacturer Name: <input type = "text" id = "updateManufacturerName" style = "margin-left: 4.75vw; margin-right: 5vw;">Product Name: <input type = "text" id = "updateProductName" style = "margin-left: 0.2vw;"><br>
 <input type = "button" onclick = "databaseUpdate()" value = "Update">
 </form>
 </div>
@@ -634,8 +631,8 @@ Manufacturer Name: <input type = "text" id = "updateManufacturerName" style = "m
 <div id = "changePassword" style = "display: none;">
 <h5>Please enter in the old site password and the new password you would like the website to have: </h5>
 <form>
-Old Site Password: <input type = "text" id = "oldPassword" style = "margin-right: 5vw;">
-New Site Password: <input type = "text" id = "newPassword"><br>
+Old Site Password: <input type = "text" id = "oldPassword" style = "margin-right: 5vw; margin-left: 0.2vw;" >
+New Site Password: <input type = "text" id = "newPassword" style = "margin-left: 0.2vw;"><br>
 <input type = "button" onclick = "databaseChangePassword()" value = "Change Password">
 </form>
 </div>
