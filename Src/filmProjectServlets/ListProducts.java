@@ -33,7 +33,6 @@ public class ListProducts extends HttpServlet {
 	
 	//the parameter manufacturer stores the requested manufacturer's name
 	//the parameter product stores the requested product's name
-	//the parameter filterOn is true if only available products are to be shown, and false otherwise.
 	//the parameter sortOrder contains a String, whose first character represents what category to sort by (A for the Product ID, B for the second column, and so forth)
 	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
