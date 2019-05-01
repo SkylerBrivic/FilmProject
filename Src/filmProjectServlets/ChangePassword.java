@@ -1,3 +1,7 @@
+
+package filmProjectServlets;
+import filmObjects.*;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -7,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.sql.*;
 
 
 @WebServlet("/ChangePassword")
@@ -32,43 +35,17 @@ public class ChangePassword extends HttpServlet {
 	//is not changed and 1 is returned.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String passwordTable = "passwordTable";
-		
 		String oldPassword = request.getParameter("oldPassword");
 		String newPassword = request.getParameter("newPassword");
 		
-		PasswordValidator validator = new PasswordValidator();
-		if(validator.validate(oldPassword) == false)
+		DatabaseInterface databaseInterface = new DatabaseInterface();
+		if(databaseInterface.updatePassword(oldPassword, newPassword) == false)
 		{
 			response.getWriter().println("1");
 			return;
 		}
 		
 		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
-		{
-			Statement statement = connection.createStatement();
-			statement.executeUpdate("UPDATE " + passwordTable + " SET Password = '" + newPassword + "';");
-		
-		}
-		catch(SQLException e)
-		{
-			System.out.println("An Exception occured");
-		}
-		
 		response.getWriter().println("0");
-
 }
 }

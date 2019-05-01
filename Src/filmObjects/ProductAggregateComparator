@@ -1,0 +1,42 @@
+package filmObjects;
+
+
+import java.util.*;
+
+public class ProductAggregateComparator
+{
+	
+	
+	public class SortByManufacturerNameLow implements Comparator<ProductAggregate>
+	{
+		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
+		{
+			return firstProduct.Manufacturer.compareToIgnoreCase(secondProduct.Manufacturer);
+		}
+	}
+	
+	public class SortByManufacturerNameHigh implements Comparator<ProductAggregate>
+	{
+		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
+		{
+			return secondProduct.Manufacturer.compareToIgnoreCase(firstProduct.Manufacturer);
+		}
+	}
+	public class SortByProductNameLow implements Comparator<ProductAggregate>
+	{
+		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
+		{
+			return firstProduct.ProductName.compareToIgnoreCase(secondProduct.ProductName);
+		}
+	}
+	
+	public class SortByProductNameHigh implements Comparator<ProductAggregate>
+	{
+		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
+		{
+			return secondProduct.ProductName.compareToIgnoreCase(firstProduct.ProductName);
+		}
+	}
+}
+	
+	

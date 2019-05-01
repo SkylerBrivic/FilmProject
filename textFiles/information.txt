@@ -1,0 +1,8 @@
+username:root
+password:PondFish
+serverName:localhost:3306
+databaseName:filmProject
+productTableName:productList
+transactionTableName:checkoutList
+studentTableName:studentList
+passwordTableName:PasswordTable

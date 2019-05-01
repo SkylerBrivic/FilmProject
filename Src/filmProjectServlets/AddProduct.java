@@ -1,7 +1,6 @@
+package filmProjectServlets;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import filmObjects.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.sql.*;
+
+
 
 
 @WebServlet("/AddProduct")
@@ -35,57 +35,28 @@ public class AddProduct extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String serverName = "localhost:3306";
-		String databaseName = "FilmProject";
-		String userName = "root";
-		String password = "PondFish";
-		String productTable = "productList";
 		
 		
 		String manufacturer = request.getParameter("manufacturer");
 		String product = request.getParameter("productName");
 		String userPassword = request.getParameter("password");
 		
-		PasswordValidator validator = new PasswordValidator();
+		DatabaseInterface databaseInterface = new DatabaseInterface();
 		
-		if(validator.validate(userPassword) == false)
+		if(databaseInterface.validatePassword(userPassword) == false)
 		{
 			response.getWriter().println("1");
 			return;
 		}
 		
-		
-		
-		
-		try{
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch(ClassNotFoundException e)
-		{	
-		}
-		
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName + "?serverTimezone=UTC", userName, password))
-		{
-			Statement statement = connection.createStatement();
-			
-			String myQuery = "INSERT INTO " + productTable + "(manufacturer, productName, isAvailable) Values( '" + manufacturer + "', '" + product + "', 1);";   
-			statement.executeUpdate(myQuery);	
-		}
-		
-		
-		
-		
-		catch(SQLException e)
-		{
-		}
-		
-		
+		CharSequence target = "\'";
+		CharSequence replacement = "\'\'";
+		manufacturer = manufacturer.replace(target, replacement);
+		product = product.replace(target, replacement);
+		databaseInterface.addProduct(manufacturer,  product);
 		response.getWriter().println("0");
 		return;
-		}
-
-			
+		}		
 	}
-
 
 

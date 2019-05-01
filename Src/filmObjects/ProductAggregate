@@ -1,0 +1,22 @@
+package filmObjects;
+
+public class ProductAggregate {
+	public String ProductName, Manufacturer;
+	public int numAvailable, numInStock;
+	
+	public ProductAggregate()
+	{
+		ProductName = Manufacturer = ""; 
+		numAvailable = numInStock = 0;
+	}
+	
+	public ProductAggregate(String newProduct, String newManufacturer, int newAvailable, int newInStock)
+	{
+		ProductName = newProduct;
+		Manufacturer = newManufacturer;
+		numAvailable = newAvailable;
+		numInStock = newInStock;
+	}
+	
+
+}
