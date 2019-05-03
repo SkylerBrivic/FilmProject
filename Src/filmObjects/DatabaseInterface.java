@@ -4,7 +4,13 @@ import java.sql.*;
 import java.io.*;
 import java.util.*;
 
-
+//DatabaseInterface is a class which contains functions for interacting with a MySql database
+//the String textFileName stores the absolute path name of the text file containing the login credentials for the database
+//dataIsUpdated is a boolean variable that stores whether or not the file referenced by textFileName was succesfully fully parsed
+//the database's username, password, the database's server name, the database's name, the product table name, the transaction table name,
+//the student table name and the password table name are stored in String variables.
+//the constructor of DatabaseInterface calls the parseFile() function, which reads in the database information from the file referenced
+//by textFileName
 public class DatabaseInterface 
 {
 private static String textFileName = "/Users/Skyler/Desktop/information.txt";
@@ -22,8 +28,9 @@ public DatabaseInterface()
 	parseFile();
 }
 
-//table locations stores the tables the user wants to select from (ex. a tableLocation String equal to "productList, checkoutList" to select entries from a table named productList and a table named checkoutList
-//conditionList is the portion of the conditions following the word WHERE in the query (ex. conditionList could be "studentName = 'John Smith'")
+//conditionList is the portion of the conditions following the word WHERE in the query (ex. conditionList could be " productName = 'RGB'")
+//conditionList should start with a space
+//this function returns an ArrayList of Products which represent all products that match the search criteria specified by the user in conditionList
 public ArrayList<Product> selectProduct(String conditionList)
 {
 	ArrayList<Product> returnList = new ArrayList<Product>();
@@ -77,8 +84,7 @@ public ArrayList<Product> selectProduct(String conditionList)
 	catch(SQLException e)
 	{
 		System.out.println("SQL Exception occured in selectProduct function of DatabaseInterface class");
-		e.printStackTrace();
-		
+		e.printStackTrace();	
 	}
 	
 	return returnList;
@@ -86,12 +92,14 @@ public ArrayList<Product> selectProduct(String conditionList)
 }
 
 
-
+//selectTransaction(String) takes as input a conditionList representing the portion of a MySql search query following the "WHERE" keyword
+//conditionList should start with a space
+//this function returns an ArrayList of all transactions that matched the search criteria specified in conditionList
 public ArrayList<Transaction> selectTransaction(String conditionList)
 {
 	ArrayList<Transaction> returnList = new ArrayList<Transaction>();
 	ResultSet mainResultSet = null;
-	String tempTransactionNumber = null, tempQR = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null, tempStudentName = null, tempStudentNumber = null, tempOrganizationName = null, tempEmail = null;
+	String tempTransactionNumber = null, tempQR = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null, tempStudentName = null, tempStudentNumber = null, tempOrganizationName = null, tempEmail = null, tempExpectedReturnDate = null;
 	if(dataIsUpdated == false)
 		parseFile();
 	
@@ -139,8 +147,12 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 			tempEmail = mainResultSet.getString(studentTableName + ".Email");
 			if(tempEmail == null)
 				tempEmail = "N/A";
+			tempExpectedReturnDate = mainResultSet.getString(transactionTableName + ".expectedCheckinDate");
+			if(tempExpectedReturnDate == null)
+				tempExpectedReturnDate = "N/A";
 			
-			returnList.add(new Transaction(tempTransactionNumber, tempQR, tempManufacturerName, tempProductName, tempStudentNumber, tempStudentName, tempEmail, tempOrganizationName, tempCheckoutDate, tempCheckinDate));
+			
+			returnList.add(new Transaction(tempTransactionNumber, tempQR, tempManufacturerName, tempProductName, tempStudentNumber, tempStudentName, tempEmail, tempOrganizationName, tempCheckoutDate, tempCheckinDate, tempExpectedReturnDate));
 			
 		}
 	}
@@ -148,7 +160,7 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 		{
 			System.err.println("An SQLException occured while processing the list of data in the selectTransaction() function of the DatabaseInterface class.");
 			System.err.println("Please check the syntax of your condition string, or use the wrapper function to help with making database queries");
-			System.exit(1);
+			e.printStackTrace();
 			return null;
 		}
 		
@@ -159,6 +171,8 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 //the parameter availabilityStatus stores 0 if the program should display all transactions, 1 if only 
 //completed transactions should be shown (the product has been returned), and 2 if only ongoing
 //transactions (where the product has not yet been returned) should be shown.
+//This function acts as a wrapper function that handles the call to selectTransaction(String) with the appropriate conditionList
+//for each of the 3 possibilities for availabilityStatus. An ArrayList of all transactions matching availability status's criteria is returned
 public ArrayList<Transaction> selectTransaction(int availabilityStatus)
 {
 	String myQuery = " WHERE ";
@@ -170,7 +184,9 @@ public ArrayList<Transaction> selectTransaction(int availabilityStatus)
 	return selectTransaction(myQuery);
 }
 
-public void addProduct(String manufacturerName, String productName)
+//this function takes as input the name of a manufacturer to be added to the database, the name of a product to be added to the database,
+//and the number of copies of that item that should be added into the database.
+public void addProduct(String manufacturerName, String productName, int quantity)
 {
 	if(dataIsUpdated == false)
 		parseFile();
@@ -186,7 +202,11 @@ public void addProduct(String manufacturerName, String productName)
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
+		
+		for(int i = 0; i < quantity; ++i)
+		{
 		statement.executeUpdate(myQuery);
+		}
 		
 	}
 	catch(SQLException e)
@@ -196,7 +216,10 @@ public void addProduct(String manufacturerName, String productName)
 	
 }
 
-public void updateProduct(String QR_Code, String newManufacturerName, String newProductName)
+//updateProduct takes as input the Product ID/QR_Code number of the product to be updated, and the conditionList specifying what
+//the product should be changed to (this is assumed to be following the "SET" keyword, and should start with a space)
+//the function updates the entry in the database with the specified QR Code.
+public void updateProduct(String QR_Code, String conditionList)
 {
 	if(dataIsUpdated == false)
 		parseFile();
@@ -208,7 +231,7 @@ public void updateProduct(String QR_Code, String newManufacturerName, String new
 		return;
 	}
 	
-	String myQuery = "UPDATE " + productTableName + " SET manufacturer = '" + newManufacturerName + "', productName = '" + newProductName + "' WHERE QR_Code = " + QR_Code + ";";
+	String myQuery = "UPDATE " + productTableName + " SET " + conditionList + " WHERE QR_Code = " + QR_Code + ";";
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
@@ -219,7 +242,11 @@ public void updateProduct(String QR_Code, String newManufacturerName, String new
 		e.printStackTrace();
 	}
 }
-public void checkoutProduct(String QR_Code, String studentNumber, String studentName, String organizationName, String email)
+
+//This function takes as input the Product ID/QR Code of the product that the user is checking out, the student number of the student checking the product out,
+//the name of the student checking the product out, the organization name of the student, the student's email, and the estimated return date
+//for the product (in yyyy-MM-dd format). The function updates the database to reflect checking out the product specified by QR_Code
+public void checkoutProduct(String QR_Code, String studentNumber, String studentName, String organizationName, String email, String returnDate)
 {
 	if(dataIsUpdated == false)
 		parseFile();
@@ -231,6 +258,8 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 		return;
 	}
 	String myQuery = "";
+	KeywordMatcher keywordMatcher = new KeywordMatcher();
+	
 	myQuery = "SELECT * from " + studentTableName + " WHERE studentNumber = '" + studentNumber + "';";
 	
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
@@ -238,10 +267,13 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(myQuery);
 		if(resultSet.next())
-		{	
-			myQuery = "UPDATE " + studentTableName + " SET studentName = '" + studentName + "', email = '" + email + "', organizationName = '" + organizationName + "' WHERE studentNumber = '" + studentNumber + "';";
-			Statement otherStatement = connection.createStatement();
-			otherStatement.executeUpdate(myQuery);
+		{
+			if(email != null && !email.equalsIgnoreCase("N/A") && !keywordMatcher.isEmpty(email))
+			{	
+				myQuery = "UPDATE " + studentTableName + " SET email = '" + email + "';";
+				Statement otherStatement = connection.createStatement();
+				otherStatement.executeUpdate(myQuery);	
+			}
 			
 		}
 		else
@@ -250,10 +282,11 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 			statement.executeUpdate(myQuery);
 		}
 		
+		myQuery = "INSERT INTO " + transactionTableName + " (QR_Code, StudentNumber, checkoutDate, checkinDate, expectedCheckinDate) VALUES (" + QR_Code + ", '" + studentNumber + "', CURRENT_DATE, NULL, '" + returnDate + "');";
+		statement.executeUpdate(myQuery);
 		myQuery = "UPDATE " + productTableName + " SET isAvailable = 0 WHERE QR_Code = " + QR_Code + ";";
 		statement.executeUpdate(myQuery);
-		myQuery = "INSERT INTO " + transactionTableName + " (QR_Code, StudentNumber, checkoutDate, checkinDate) VALUES (" + QR_Code + ", '" + studentNumber + "', CURRENT_DATE, NULL);";
-		statement.executeUpdate(myQuery);
+		
 	}
 	catch(SQLException e)
 	{
@@ -261,6 +294,8 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 	}
 }
 
+//this function takes as input a String representing the product ID number/QR Code of an item in the database.
+//the function deletes that item from the product list table, along with any transactions that included the item.
 public void deleteProduct(String QR_Code)
 {
 	if(dataIsUpdated == false)
@@ -286,7 +321,8 @@ public void deleteProduct(String QR_Code)
 	}
 	
 }
-
+//this function takes as input the QR Code of the product that the user is going to check in.
+//the function updates the database appropriately to reflect the fact that the product is now checked back in.
 public void checkinProduct(String QR_Code)
 {
 	if(dataIsUpdated == false)
@@ -314,6 +350,9 @@ public void checkinProduct(String QR_Code)
 	
 }
 
+//this function takes as input a String that the user has entered in for the password.
+//the program checks the password table of the database to see if this is the correct password.
+//If it is correct, then it returns true. Otherwise, it returns false.
 public boolean validatePassword(String userEnteredPassword)
 {
 	boolean isValid = false;
@@ -347,7 +386,9 @@ public boolean validatePassword(String userEnteredPassword)
 	return isValid;
 	
 }
-
+//this function takes as input a String representing the site's current password and a String representing the new password for the site.
+//if the old password was correctly entered in, then the new password is set for the password for the site, and true is returned.
+//Otherwise, the password is not changed and false is returned.
 public boolean updatePassword(String oldPassword, String newPassword)
 {
 	boolean isValid = validatePassword(oldPassword);
@@ -365,6 +406,9 @@ public boolean updatePassword(String oldPassword, String newPassword)
 	return true;
 	
 }
+
+//parseFile reads through the file stored in textFileName and parses the database's login credentials, name, and tables.
+//if the file is succesfully parsed fully, then dataIsUpdated is set to true
 private void parseFile()
 {
 	boolean usernameSet = false, databasePasswordSet = false, serverNameSet = false, databaseNameSet = false, productTableNameSet = false, transactionTableNameSet = false, studentTableNameSet = false, passwordTableNameSet = false;
