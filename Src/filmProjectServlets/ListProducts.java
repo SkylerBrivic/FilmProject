@@ -35,6 +35,7 @@ public class ListProducts extends HttpServlet {
 	//the parameter product stores the requested product's name
 	//the parameter sortOrder contains a String, whose first character represents what category to sort by (A for the Product ID, B for the second column, and so forth)
 	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
+	//an ArrayList of all the ProductAggregates matching the user's request is returned by the servlet.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
@@ -48,8 +49,11 @@ public class ListProducts extends HttpServlet {
 		ProductComparator productComparator = new ProductComparator();
 		ProductAggregateComparator productAggregateComparator = new ProductAggregateComparator();
 		DatabaseInterface databaseInterface = new DatabaseInterface();
+		
+		//storing all products in the database in the ArrayList allProducts
 		allProducts = databaseInterface.selectProduct("");
 		
+		//storing all products that match the user's search criteria in the ArrayList productList
 		for(int i = 0; i < allProducts.size(); ++i)
 		{
 			if(manufacturer != null && !keywordMatcher.isEmpty(manufacturer) && !keywordMatcher.matchDataStrings(allProducts.get(i).ManufacturerName, manufacturer))
@@ -59,9 +63,15 @@ public class ListProducts extends HttpServlet {
 			productList.add(allProducts.get(i));	
 		}
 
+		//sorting productList by ProductName, followed by sorting it again by manufacturer name.
+		//(this way, the product's are in the list in manufacturer order alphabetically, with each product being organized
+		//alphabetically within the block of the list containing a manufacturer's products. Additionally, all products which have the same
+		//manufacturer name and product name will be next to each other, allowing the following algorithm to work to build the ProductAggregate list).
 	Collections.sort(productList, productComparator.new SortByProductNameLow());
 	Collections.sort(productList, productComparator.new SortByManufacturerNameLow());
 	boolean firstEntryOfKind = true;
+	
+	//creating the ProductAggregate ArrayList (which is finalProductList).
 	for(int i = 0; i < productList.size(); ++i)
 	{
 		if(firstEntryOfKind)
@@ -99,6 +109,7 @@ public class ListProducts extends HttpServlet {
 		
 	}
 		
+	//sorting finalProductList according to any user specified list order.
 		char sortCriteria = sortOrder.charAt(0);
 
 		if(Integer.parseInt(sortOrder.substring(1)) == 1)
@@ -122,8 +133,7 @@ public class ListProducts extends HttpServlet {
 		Gson gson = new Gson();
 		String returnString = gson.toJson(finalProductList);
 		response.getWriter().println(returnString);
-		
-		
 	}
 
 }
+
