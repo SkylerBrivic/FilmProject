@@ -10,13 +10,15 @@
 .headerLink:hover{background-color: orange;}
 .linkFormat{color: white; text-decoration: none;}
 .headingFormat{position: relative; top: 2vw; left: 45vw; color: black; font-family: Heveltica; size: 2vw;}
-.footer{margin-left: 30vw; position: fixed; bottom: 0vw; color: navy; font-family: "Times New Roman";}
+.footer{margin-left: 30vw; color: navy; font-family: "Times New Roman";}
 p{font-family: Heveltica}
 </style>
+<!-- This acts as the home page for the website -->
 <title>Welcome</title>
 </head>
 <body style = "background-color: Ivory; margin: 1vw;">
 <header>
+<!-- This section contains the top navigation bar for the page, with links to the other pages on the website -->
 <div class = "headerBanner">
 		<div class = "headerLink">
 			<a class = "linkFormat" href = "userWelcomePage.jsp">Home</a>
@@ -32,7 +34,7 @@ p{font-family: Heveltica}
 <h1 class = "headingFormat">Welcome!</h1>
 <br><p>Welcome to the Little Center Inventory Page! Using this website, you can check what equipment is available. Additionally, administrators can login to this
 site in order to check products in, check products out, and perform other administrative functions</p>
-<p>In order to view the status of the equipement in the Little Center, click on the View Products link. To login to the site to perform administrative functions,
+<p>In order to view the status of the equipment in the Little Center, click on the View Products link. To login to the site to perform administrative functions,
 please click on the Login tab</p>
 <img style = "margin-left: 40vw; max-height: 30vw; max-width: 25vw;" src = "images/Clark_Theater_Picture.jpg" alt = "Main picture">
 <div class = "footer">Clark University | Little Center Theater Equipment Rentals | &#169; 2019</div>
