@@ -1,3 +1,4 @@
+
 package filmObjects;
 
 import java.text.*;
@@ -74,16 +75,17 @@ public class TransactionComparator
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			return (new BigInteger(firstProduct.studentNumber).compareTo(new BigInteger(secondProduct.studentNumber)));		}
+			return firstProduct.studentNumber.compareToIgnoreCase(secondProduct.studentNumber);
 	}
 	
+		}
 	public class SortByStudentNumberHigh implements Comparator<Transaction>
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			return (new BigInteger(secondProduct.studentNumber).compareTo(new BigInteger(firstProduct.studentNumber)));		}
+			return secondProduct.studentNumber.compareToIgnoreCase(firstProduct.studentNumber);
+		}
 	}
-	
 	public class SortByCheckoutDateLow implements Comparator<Transaction>
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
@@ -95,7 +97,7 @@ public class TransactionComparator
 				return 1;
 			try {
 			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkoutDate);
-			Date secondDate = new SimpleDateFormat("yyy-MM-dd").parse(secondProduct.checkoutDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkoutDate);
 			return firstDate.compareTo(secondDate);
 			
 			}
@@ -114,7 +116,7 @@ public class TransactionComparator
 				return -1;
 			try {
 			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkoutDate);
-			Date secondDate = new SimpleDateFormat("yyy-MM-dd").parse(secondProduct.checkoutDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkoutDate);
 			return secondDate.compareTo(firstDate);
 			
 			}
@@ -133,7 +135,7 @@ public class TransactionComparator
 				return 1;
 			try {
 			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkinDate);
-			Date secondDate = new SimpleDateFormat("yyy-MM-dd").parse(secondProduct.checkinDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkinDate);
 			return firstDate.compareTo(secondDate);
 			
 			}
@@ -153,7 +155,7 @@ public class TransactionComparator
 				return -1;
 			try {
 			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkinDate);
-			Date secondDate = new SimpleDateFormat("yyy-MM-dd").parse(secondProduct.checkinDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkinDate);
 			return secondDate.compareTo(firstDate);
 			
 			}
@@ -162,6 +164,52 @@ public class TransactionComparator
 			return -1;
 		}
 	}
+	
+	public class SortByExpectedCheckinDateHigh implements Comparator<Transaction>
+	{
+		public int compare(Transaction firstProduct, Transaction secondProduct)
+		{
+			if(firstProduct.expectedCheckinDate.equals("N/A"))
+				return 1;
+			if(secondProduct.expectedCheckinDate.equals("N/A"))
+				return -1;
+			try {
+			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.expectedCheckinDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.expectedCheckinDate);
+			return secondDate.compareTo(firstDate);
+			
+			}
+			catch(ParseException e)
+			{}
+			return -1;
+		}
+	}
+		
+	
+
+public class SortByExpectedCheckinDateLow implements Comparator<Transaction>
+{
+	public int compare(Transaction firstProduct, Transaction secondProduct)
+	{
+		if(firstProduct.expectedCheckinDate.equals("N/A"))
+			return 1;
+		if(secondProduct.expectedCheckinDate.equals("N/A"))
+			return -1;
+		try {
+		Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.expectedCheckinDate);
+		Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.expectedCheckinDate);
+		return firstDate.compareTo(secondDate);
+		
+		}
+		catch(ParseException e)
+		{}
+		return -1;
+	}
+	}
+	
+
+
+
 	
 	public class SortByStudentNameLow implements Comparator<Transaction>
 	{
@@ -209,5 +257,7 @@ public class TransactionComparator
 		}
 	}
 	
-}
+	}
+	
+
 	
