@@ -73,29 +73,30 @@ public class AdministratorDataView extends HttpServlet {
 			
 			ArrayList<Transaction>  allTransactions = databaseInterface.selectTransaction(filterStatus);
 			
+			//filtering out transactions that don't match the user's search criteria
 			for(int i = 0; i < allTransactions.size(); ++i)
 			{
-				if(TransactionNumber != null && !TransactionNumber.equals("") && !TransactionNumber.equals(allTransactions.get(i).transactionNumber))
+				if(TransactionNumber != null && !keywordMatcher.isEmpty(TransactionNumber) && !TransactionNumber.equals(allTransactions.get(i).transactionNumber))
 					continue;
-				if(ProductNumber != null && !ProductNumber.equals("") && !ProductNumber.equals(allTransactions.get(i).QR_Code))
+				if(ProductNumber != null && !keywordMatcher.isEmpty(ProductNumber) && !ProductNumber.equals(allTransactions.get(i).QR_Code))
 					continue;
-				if(Manufacturer != null && !Manufacturer.equals("") && !keywordMatcher.matchDataStrings(allTransactions.get(i).manufacturerName, Manufacturer))
+				if(Manufacturer != null && !keywordMatcher.isEmpty(Manufacturer) && !keywordMatcher.matchDataStrings(allTransactions.get(i).manufacturerName, Manufacturer))
 					continue;
-				if(ProductName != null && !ProductName.equals("") && !keywordMatcher.matchDataStrings(allTransactions.get(i).productName, ProductName))
+				if(ProductName != null && !keywordMatcher.isEmpty(ProductName) && !keywordMatcher.matchDataStrings(allTransactions.get(i).productName, ProductName))
 					continue;
-				if(StudentName != null && !StudentName.equals("") && !StudentName.equalsIgnoreCase(allTransactions.get(i).studentName))
+				if(StudentName != null && !keywordMatcher.isEmpty(StudentName) && !keywordMatcher.matchDataStrings(allTransactions.get(i).studentName, StudentName))
 					continue;
-				if(StudentNumber != null && !StudentNumber.equals("") && !StudentNumber.equalsIgnoreCase(allTransactions.get(i).studentNumber))
+				if(StudentNumber != null && !keywordMatcher.isEmpty(StudentNumber) && !StudentNumber.equalsIgnoreCase(allTransactions.get(i).studentNumber))
 					continue;
-				if(OrganizationName != null && !OrganizationName.equals("") && !keywordMatcher.matchDataStrings(allTransactions.get(i).organizationName, OrganizationName))
+				if(OrganizationName != null && !keywordMatcher.isEmpty(OrganizationName) && !keywordMatcher.matchDataStrings(allTransactions.get(i).organizationName, OrganizationName))
 					continue;
-				if(Email != null && !Email.equals("") && !Email.equals(allTransactions.get(i).studentEmail))
+				if(Email != null && !keywordMatcher.isEmpty(Email) && !Email.equals(allTransactions.get(i).studentEmail))
 					continue;
 				
 				transactionList.add(allTransactions.get(i));
 			}
 			
-			
+		//handling the case where the list should be sorted in order, then using the appropriate comparator to sort by the right criteria	
 		if(Integer.parseInt(sortOrder.substring(1)) == 1)
 		{
 		if(sortCriteria == 'A')
@@ -116,11 +117,14 @@ public class AdministratorDataView extends HttpServlet {
 			Collections.sort(transactionList, transactionComparator.new SortByOrganizationLow());
 		else if(sortCriteria == 'I')
 			Collections.sort(transactionList, transactionComparator.new SortByCheckoutDateLow());
-		else
+		else if(sortCriteria == 'J')
 			Collections.sort(transactionList, transactionComparator.new SortByCheckinDateLow());
+		else
+			Collections.sort(transactionList, transactionComparator.new SortByExpectedCheckinDateLow());
 			
 		}
 		
+		//handling the case where the list should be sorted in reverse order, then using the appropriate comparator to sort by the right criteria
 		else
 		{
 			if(sortCriteria == 'A')
@@ -141,8 +145,10 @@ public class AdministratorDataView extends HttpServlet {
 				Collections.sort(transactionList, transactionComparator.new SortByOrganizationHigh());
 			else if(sortCriteria == 'I')
 				Collections.sort(transactionList, transactionComparator.new SortByCheckoutDateHigh());
-			else
+			else if(sortCriteria == 'J')
 				Collections.sort(transactionList, transactionComparator.new SortByCheckinDateHigh());
+			else
+				Collections.sort(transactionList, transactionComparator.new SortByExpectedCheckinDateHigh());
 		}
 			
 			
