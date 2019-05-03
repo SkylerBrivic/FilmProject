@@ -6,7 +6,7 @@ import java.util.*;
 public class ProductAggregateComparator
 {
 	
-	
+	//sorts ProductAggregate Lists by Manufacturer Name from low to high alphabetically
 	public class SortByManufacturerNameLow implements Comparator<ProductAggregate>
 	{
 		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
@@ -15,6 +15,7 @@ public class ProductAggregateComparator
 		}
 	}
 	
+	//sorts ProductAggregate Lists by Manufacturer Name from high to low alphabetically
 	public class SortByManufacturerNameHigh implements Comparator<ProductAggregate>
 	{
 		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
@@ -22,6 +23,8 @@ public class ProductAggregateComparator
 			return secondProduct.Manufacturer.compareToIgnoreCase(firstProduct.Manufacturer);
 		}
 	}
+	
+	//sorts ProductAggregate Lists by Product Name from low to high alphabetically
 	public class SortByProductNameLow implements Comparator<ProductAggregate>
 	{
 		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
@@ -30,6 +33,7 @@ public class ProductAggregateComparator
 		}
 	}
 	
+	//sorts ProductAggregate Lists by Product Name from high to low alphabetically
 	public class SortByProductNameHigh implements Comparator<ProductAggregate>
 	{
 		public int compare(ProductAggregate firstProduct, ProductAggregate secondProduct)
