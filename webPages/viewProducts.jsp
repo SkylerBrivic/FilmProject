@@ -22,7 +22,8 @@
 </style>
  <script type = "text/javascript" src = "http://code.jquery.com/jquery-1.10.0.min.js"></script>
 <script>
-
+//ProductAggregate is what the server returns to the web page. Information from an array of these objects is what enables the 
+//creation of the list of products on the viewProducts.jsp page
 class ProductAggregate
 {
 	 constructor(ProductName, Manufacturer, numAvailable, numInStock)
@@ -34,30 +35,17 @@ class ProductAggregate
 	 } 
 }
 
-class Transaction
-{
-	 constructor(transactionNumber, QR_Code, manufacturerName, productName, studentNumber, studentName, studentEmail, organizationName, checkoutDate, checkinDate)
-	 {
-		 this.transactionNumber = transactionNumber;
-		 this.QR_Code = QR_Code;
-		 this.manufacturerName = manufacturerName;
-		 this.productName = productName;
-		 this.studentNumber = studentNumber;
-		 this.studentName = studentName;
-		 this.studentEmail = studentEmail;
-		 this.organizationName = organizationName;
-		 this.checkoutDate = checkoutDate;
-		 this.checkinDate = checkinDate;
-	 }
-	  
-}
 
 var tableSortOrder = 1;
+//Loading the list of products when the page is finished loading. The products will initially be sorted by Product Name
 $( document ).ready(function()
 	{
 	populateTable("", "", 'A');
 	});
 	
+//populateTable takes as input the Strings manufacturer, product, and sortLetter
+//populateTable passes these parameters to the ListProducts Servlet, which returns an array of ProductAggregate objects
+//the contents of this array are then used to populate a table, which generates the list of products seen on this page.
 function populateTable(manufacturer, product, sortLetter)
 {
 	var sortCriteria = sortLetter + tableSortOrder.toString();
@@ -106,6 +94,8 @@ function populateTable(manufacturer, product, sortLetter)
 	
 }
 
+//populateTableHelper is the helper method that the submit button for the product search feature calls, which collects
+//the manufacturer name and product name strings that the user has requested and passes these on to the function populateTable.
 function populateTableHelper()
 {
 	var manufacturerName = $("#manufacturerText").val();
@@ -115,10 +105,14 @@ function populateTableHelper()
 
 </script>
 <meta charset="UTF-8">
+<!-- This page provides a list of all the products in the Little Center, with a list of how many of each product is currently available,
+how many total products of that type the Little Center has, the Product Name and Manufacturer name of the product, and a picture of the product.
+Additionally, there is a search bar where the user can search for products that contain a specific String within their product name or manufacturer name -->
 <title>Inventory View</title>
 </head>
 <body style = "background-color: LightYellow;">
 <header>
+<!-- This section contains the top navigation bar for the website, which contains links to all the other pages of the website. -->
 <div class = "headerBanner">
 		<div class = "headerLink">
 			<a class = "linkFormat" href = "userWelcomePage.jsp">Home</a>
