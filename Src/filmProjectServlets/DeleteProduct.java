@@ -38,9 +38,16 @@ public class DeleteProduct extends HttpServlet {
 	String QR_Code = request.getParameter("QR_Code");
 	String password = request.getParameter("password");
 	DatabaseInterface databaseInterface = new DatabaseInterface();
+	KeywordMatcher keywordMatcher = new KeywordMatcher();
 	if(databaseInterface.validatePassword(password) == false)
 	{
 		response.getWriter().println("2");
+		return;
+	}
+	
+	if(keywordMatcher.isEmpty(QR_Code))
+	{
+		response.getWriter().println("1");
 		return;
 	}
 	
@@ -52,7 +59,6 @@ public class DeleteProduct extends HttpServlet {
 	}
 	databaseInterface.deleteProduct(QR_Code);
 	response.getWriter().println("0");
-		
 	}
 }
 
