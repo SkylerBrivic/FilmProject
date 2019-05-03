@@ -41,11 +41,18 @@ public class CheckinProduct extends HttpServlet {
 	String QR_Code = request.getParameter("QR_Code");
 	String password = request.getParameter("password");
 	DatabaseInterface databaseInterface = new DatabaseInterface();
+	KeywordMatcher keywordMatcher = new KeywordMatcher();
 	if(databaseInterface.validatePassword(password) == false)
 	{
 		response.getWriter().println("3");
 		return;
 	}
+	if(keywordMatcher.isEmpty(QR_Code))
+	{
+		response.getWriter().println("1");
+		return;
+	}
+	
 	ArrayList<Product> productExistence = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
 	if(productExistence.size() == 0)
 	{
