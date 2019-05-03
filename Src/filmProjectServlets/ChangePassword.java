@@ -33,10 +33,22 @@ public class ChangePassword extends HttpServlet {
 	//if the value of oldPassword matches the password stored in the database, then the password
 	//in the database is updated to be the new password, and 0 is returned. Otherwise, the password
 	//is not changed and 1 is returned.
+	//If the new password was not entered in, then 2 is returned
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		String oldPassword = request.getParameter("oldPassword");
 		String newPassword = request.getParameter("newPassword");
+		KeywordMatcher keywordMatcher = new KeywordMatcher();
+		if(keywordMatcher.isEmpty(oldPassword))
+		{
+			response.getWriter().println("1");
+			return;
+		}
+		if(keywordMatcher.isEmpty(newPassword))
+		{
+			response.getWriter().println("2");
+			return;
+		}
 		
 		DatabaseInterface databaseInterface = new DatabaseInterface();
 		if(databaseInterface.updatePassword(oldPassword, newPassword) == false)
