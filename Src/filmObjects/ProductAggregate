@@ -1,5 +1,9 @@
 package filmObjects;
 
+//a ProductAggregate stores how many of a particular product are in the Little Center's inventory (including ones currently being rented) and how many
+//of that particular product are currently available to be rented. Two or more entries in the database are represented by the same productAggregate object if they
+//have the same product name and manufacturer name. An array of productAggregate objects is what is sent to the client when they request to see a list of products
+//on the "View Products" page of the website.
 public class ProductAggregate {
 	public String ProductName, Manufacturer;
 	public int numAvailable, numInStock;
