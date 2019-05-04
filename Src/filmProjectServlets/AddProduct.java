@@ -85,4 +85,3 @@ public class AddProduct extends HttpServlet {
 		return;
 		}		
 	}
-
