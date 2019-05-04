@@ -715,7 +715,6 @@ Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margi
 </div>
 
 <p id = "functionStatus" style = "display: none;"></p>
-<div class = "w3-container" style = "text-align: center; color: navy; font-family: 'Times New Roman'; margin-top: 1.3vw;">Clark University | Little Center Theater Equipment Rentals | &#169; 2019</div>
+<div class = "footer">Clark University | Little Center Theater Equipment Rentals | &#169; 2019</div>
 </body>
 </html>
-
