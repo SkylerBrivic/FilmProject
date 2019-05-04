@@ -69,6 +69,10 @@ public class AdministratorDataView extends HttpServlet {
 			return;
 		}
 		
+		if(!keywordMatcher.isEmpty(TransactionNumber) && !keywordMatcher.isPositiveInteger(TransactionNumber))
+			TransactionNumber = "";
+		if(!keywordMatcher.isEmpty(ProductNumber) && !keywordMatcher.isPositiveInteger(ProductNumber))
+			ProductNumber = "";
 		
 			char sortCriteria = sortOrder.charAt(0);
 			
