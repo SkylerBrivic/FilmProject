@@ -55,5 +55,28 @@ public class KeywordMatcher
 			}
 			return true;
 		}
+		
+		//isPositiveInteger returns true if the entire String represents a positive Integer. Otherwise, the function returns false
+		//this function assumes the String has no positive symbol in front of it ("+") or a decimal point in the number
+		public boolean isPositiveInteger(String inputString)
+		{
+			boolean nonZero = false;
+			if(inputString == null || inputString.equals(""))
+				return false;
+			
+			
+		
+			for(int i = 0; i < inputString.length(); ++i)
+			{
+				if(inputString.charAt(i) < 48 || inputString.charAt(i) > 57)
+					return false;
+				if(inputString.charAt(0) != '0')
+					nonZero = true;
+			}
+				if(nonZero)
+			return true;	
+				else
+			return false;
+		}
 	 
 }
