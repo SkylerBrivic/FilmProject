@@ -28,7 +28,10 @@ public class CheckoutProduct extends HttpServlet {
 		doPost(request, response);
 	}
 
-	
+
+	//the parameter Product_ID stores the products ID Number, the parameter StudentNumber stores the student's number, the parameter StudentName stores the name of the student,
+	//the parameter OrganizationName stores the organization's name, the parameter Email stores the email of the person checking the product out, password stores 
+	//the password for the website, and ExpectedReturnDate stores the product's expected return date in yyyy-MM-dd format.
 	//a return value of 0 means the product was succesfully checked out
 	//a return value of 1 means the specified QR Code was invalid
 	//a return value of 2 means that the product is already checked out by somebody else
@@ -37,13 +40,9 @@ public class CheckoutProduct extends HttpServlet {
 	//a return value of 5 means that the organizationName was not filled in
 	//a return value of 6 means that an expected return date was not filled in
 	//a return value of 7 means that the date was not in yyyy-MM-dd format
-	//a return value of 8 means that the studentNumber was not filled in
-	//the parameter QR_Code stores the products QR Code, the parameter StudentNumber stores the student's number, the parameter OrganizationName
-	//stores the organization's name, the parameter Email stores the email of the person checking the product out, password stores the password for the
-	//website, and ExpectedReturnDate stores the product's expected return date in yyyy-MM-dd format.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{		
-		String QR_Code = request.getParameter("QR_Code");
+		String Product_ID = request.getParameter("Product_ID");
 		String studentNumber = request.getParameter("StudentNumber");
 		String studentName = request.getParameter("StudentName");
 		String organizationName = request.getParameter("OrganizationName");
@@ -52,7 +51,7 @@ public class CheckoutProduct extends HttpServlet {
 		String userDate = request.getParameter("ExpectedReturnDate");
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		DatabaseInterface databaseInterface = new DatabaseInterface();
-		if(keywordMatcher.isEmpty(QR_Code))
+		if(keywordMatcher.isEmpty(Product_ID))
 		{
 			response.getWriter().println("1");
 			return;
@@ -62,7 +61,7 @@ public class CheckoutProduct extends HttpServlet {
 			response.getWriter().println("3");
 			return;
 		}
-		ArrayList<Product> productCheck = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+		ArrayList<Product> productCheck = databaseInterface.selectProductByProductID(Product_ID);
 		if(productCheck.size() == 0)
 		{
 			response.getWriter().println("1");
@@ -107,8 +106,7 @@ public class CheckoutProduct extends HttpServlet {
 		
 		if(studentNumber == null || keywordMatcher.isEmpty(studentNumber))
 			{
-			response.getWriter().println("8");
-			return;
+			studentNumber = "N/A";
 			}
 		
 		if(email == null || keywordMatcher.isEmpty(email))
@@ -116,13 +114,13 @@ public class CheckoutProduct extends HttpServlet {
 		
 		CharSequence target = "\'";
 		CharSequence replacement = "\'\'";
-		QR_Code = QR_Code.replace(target, replacement);
+		Product_ID = Product_ID.replace(target, replacement);
 		studentNumber = studentNumber.replace(target, replacement);
 		studentName = studentName.replace(target, replacement);
 		organizationName = organizationName.replace(target, replacement);
 		email = email.replace(target, replacement);
 		
-		databaseInterface.checkoutProduct(QR_Code, studentNumber, studentName, organizationName, email, userDate);
+		databaseInterface.checkoutProduct(Product_ID, studentNumber, studentName, organizationName, email, userDate);
 		response.getWriter().println("0");
 	}
 }
