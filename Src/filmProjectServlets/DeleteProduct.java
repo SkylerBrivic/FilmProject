@@ -46,7 +46,7 @@ public class DeleteProduct extends HttpServlet {
 		return;
 	}
 	
-	if(keywordMatcher.isEmpty(Product_ID))
+	if(keywordMatcher.isEmpty(Product_ID) || !keywordMatcher.isPositiveInteger(Product_ID))
 	{
 		response.getWriter().println("1");
 		return;
@@ -62,3 +62,4 @@ public class DeleteProduct extends HttpServlet {
 	response.getWriter().println("0");
 	}
 }
+
