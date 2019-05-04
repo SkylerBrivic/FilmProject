@@ -570,15 +570,17 @@ function changePasswordFeatureLoad()
 }
 
 </script>
+<link href = "NavigationBar.css" rel = "stylesheet" type = "text/css">
 <style>
 .headerBanner{min-width: 100vw; height: 3vw; position: absolute; top: 0vw; left: 0vw; background-color: red;}
 .headerLink{margin-right: 4vw; background-color: red; padding-left: 1vw; padding-right: 1vw; padding-top: 0.25vw; padding-bottom: 0.1vw; display: inline-block; font-size: 2.30vw; text-align: center;}
 .headerLink:hover{background-color: orange;}
 .linkFormat{color: white; text-decoration: none;}
 .headingFormat{position: relative; top: 2vw; left: 45vw; color: black; font-family: Heveltica; size: 2vw;}
-.footer{margin-left: 30vw; color: navy; font-family: "Times New Roman";}
+.footer{text-align: center; color: navy; font-family: "Times New Roman"; margin-top: 1.3vw;}
 p{font-family: Heveltica;}
 table, tr, th{background-color: white;}
+body{margin: 0;}
 
 
 </style>
@@ -586,20 +588,13 @@ table, tr, th{background-color: white;}
 <body style = "background-color: Ivory; font-size: 1.20vw; font-family: 'Heveltica'">
 <header>
 <!-- This section contains the main navigation bar for the website, with links to the other pages of the website here -->
-<div class = "headerBanner">
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "userWelcomePage.jsp">Home</a>
-		</div>
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "login.jsp">Login</a>
-		</div>
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "viewProducts.jsp">View Products</a>
-		</div>
+<div class = "w3-bar w3-red" style = "margin-bottom: 0vw;">
+	<a href="userWelcomePage.jsp" class="w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">Home</a>
+	<a href = "login.jsp" class = "w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">Login</a>
+	<a href = "viewProducts.jsp" class = "w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">View Products</a>
 </div>
 </header>
-
-<h1 style = "position: relative; top: 2vw;">Enter the Site Password Here: </h1><br>
+<h1 style = "margin-top: 0.4vw; margin-left: 0.2vw; margin-bottom: 0.1vw; padding: 0;">Enter the Site Password Here: </h1><br>
 <form>
 Site Password: <input type = "password" id = "Password" style = "margin-left: 0.2vw;"><br>
 <input id = "submitButton" type = "button" onclick = "databaseLogin()" value = "Submit">
@@ -646,10 +641,10 @@ Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margi
 <div id = "searchFeature" style = "display: none;">
 <h5>Use the search feature to fine-tune your search</h5>
 <form>
-Transaction Number: <input style = "margin-left: 0.2vw; margin-right: 9vw;" type = "text" id = "adminTransactionNumber">Product Number: <input type = "text" style = "margin-left: 0.2vw;"id = "adminProductNumber"><br>
-Manufacturer: <input style = "margin-left: 3.5vw; margin-right: 8.9vw;" type = "text" id = "adminManufacturer">Product Name: <input type = "text" style = "margin-left: 1.25vw;" id = "adminProduct"><br>
-Student Name: <input style = "margin-right: 8.9vw; margin-left: 3.2vw;" type = "text" id = "adminStudentName">Student Number: <input type = "text" style = "margin-left: 0.35vw" id = "adminStudentNumber"><br>
-Organization Name: <input style = "margin-right: 8.85vw; margin-left: 0.7vw;" type = "text" id = "adminOrganization">Email Address: <input type = "text" style = "margin-left: 1.1vw;" id = "adminEmail"><br>
+&nbsp;Transaction Number: <input style = "margin-left: 0.2vw; margin-right: 9vw;" type = "text" id = "adminTransactionNumber">Product Number: <input type = "text" style = "margin-left: 0.2vw;"id = "adminProductNumber"><br>
+&nbsp;Manufacturer: <input style = "margin-left: 3.5vw; margin-right: 8.9vw;" type = "text" id = "adminManufacturer">Product Name: <input type = "text" style = "margin-left: 1.25vw;" id = "adminProduct"><br>
+&nbsp;Student Name: <input style = "margin-right: 8.9vw; margin-left: 3.2vw;" type = "text" id = "adminStudentName">Student Number: <input type = "text" style = "margin-left: 0.35vw" id = "adminStudentNumber"><br>
+&nbsp;Organization Name: <input style = "margin-right: 8.85vw; margin-left: 0.7vw;" type = "text" id = "adminOrganization">Email Address: <input type = "text" style = "margin-left: 1.1vw;" id = "adminEmail"><br>
 <input type = "radio" name = "filterStatus" id = "adminAll" style = "margin-right: 0.70vw" checked = "checked">Show All Transactions<input type = "radio" style = "margin-left: 17.3vw; margin-right: 0.70vw;" name = "filterStatus" id = "adminCompleted"> Show Only Completed Transactions
 <br><input type = "radio" style = "margin-right: 0.70vw;"  name = "filterStatus" id = "adminOngoing">Show Only Ongoing Transactions
 <br>
@@ -720,7 +715,7 @@ Organization Name: <input style = "margin-right: 8.85vw; margin-left: 0.7vw;" ty
 </div>
 
 <p id = "functionStatus" style = "display: none;"></p>
-<div  class = "footer">Clark University | Little Center Theater Equipment Rentals | &#169; 2019</div>
+<div class = "w3-container" style = "text-align: center; color: navy; font-family: 'Times New Roman'; margin-top: 1.3vw;">Clark University | Little Center Theater Equipment Rentals | &#169; 2019</div>
 </body>
 </html>
 
