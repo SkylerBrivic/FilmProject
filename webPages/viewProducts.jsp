@@ -64,17 +64,20 @@ function populateTable(manufacturer, product, sortLetter)
 			var productArray = JSON.parse(data);
 			var listLength = productArray.length;
 			var TableBody = document.getElementById("tableStart");
-			var cellInnerHTMLString = "";
 			TableBody.innerHTML = "";
-			var tableBodyHTMLString = "<tr>";
+			var cellInnerHTMLString = "";
 			var row, cell1;
 			for(var i = 0; i < listLength; ++i)
 			{
 			if(i % 4 == 0)
 			row = TableBody.insertRow();
 			cell1 = row.insertCell(i % 4);	
-			cellInnerHTMLString = "<div class = 'ProductFormatBox'><div class = 'boxTitle'>" + productArray[i].ProductName + "</div><img style = 'margin-left: 3vw; margin-right: 3vw;' src = 'images/" + productArray[i].Manufacturer + "_" + productArray[i].ProductName + ".jpg' alt = 'Product Image Not Available' height = '200px' width = '200px'><div class = 'boxManufacturer'>Made by " + productArray[i].Manufacturer + "</div>"
+			
+			cellInnerHTMLString = "<div class = 'ProductFormatBox'><div class = 'boxTitle'>" + productArray[i].ProductName + 
+			"</div><img style = 'margin-left: 3vw; margin-right: 3vw;' src = 'images/" + productArray[i].Manufacturer + "_" + productArray[i].ProductName + 
+			".jpg' alt = 'Product Image Not Available' height = '200px' width = '200px'><div class = 'boxManufacturer'>Made by " + productArray[i].Manufacturer + "</div>"
 			+ "<div class = 'numInStock'>Number in Inventory: " + productArray[i].numInStock;
+			
 			if(productArray[i].numAvailable == 0)
 				cellInnerHTMLString += "<div class = 'numAvailable' style = 'color: red'>";
 			else
