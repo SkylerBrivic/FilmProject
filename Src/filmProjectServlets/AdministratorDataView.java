@@ -29,21 +29,25 @@ public class AdministratorDataView extends HttpServlet {
 	
 	
 	//this servlet returns a list of transactions, which can be filtered based on user input. However, if an invalid password is entered, this servlet will instead return 2 and will not return any data.
-	//the parameter TransactionNumber stores the number of the transaction
-	//the parameter ProductNumber stores the QR Code of the product that the user requested
-	//the parameter StudentNumber stores the Student Number of the product that the user requested
-	//the parameter manufacturer stores the name of the manufacturer of the product that the user requested
-	//the parameter product stores the name of the product that the user requested.
-	//the parameter password stores the login password that the user entered in.
 	//the parameter filterStatus stores 0 if the program should display all transactions, 1 if only completed transactions should be shown (the product has been returned), and 2 if only ongoing
 	//transactions (where the product has not yet been returned) should be shown.
-	//the parameter sortOrder contains a String, whose first character represents what category to sort by (A for the transactionNumber, B for the second column, and so forth)
-	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
+	//the parameter sortOrder contains a String, whose first character represents what category to sort by (A for the transactionNumber, B for the second column in the adminTable, and so forth)
+	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for reverse sort)
+	//the parameter TransactionNumber stores the number of the transaction
+	//the parameter ProductNumber stores the Product ID Number that the user requested
+	//the parameter manufacturer stores the name of the manufacturer that the user requested
+	//the parameter product stores the name of the product that the user requested.
+	//the parameter studentName contains the Student Name that the user requested
+	//the parameter studentNumber stores the Student Number that the user requested
+	//the parameter organizationName stores the Organization Name that the user requested
+	//the parameter email stores the Email that the user requested
+	//the parameter password stores the login password that the user entered in.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 	
 		
 		int filterStatus = Integer.parseInt(request.getParameter("filterStatus"));
+		String sortOrder = request.getParameter("sortOrder");
 		String TransactionNumber = request.getParameter("TransactionNumber");
 		String ProductNumber = request.getParameter("ProductNumber");
 		String Manufacturer = request.getParameter("manufacturer");
@@ -52,11 +56,8 @@ public class AdministratorDataView extends HttpServlet {
 		String StudentNumber = request.getParameter("studentNumber");
 		String OrganizationName = request.getParameter("organizationName");
 		String Email = request.getParameter("email");
-		
-		
-		
 		String userPassword = request.getParameter("password");
-		String sortOrder = request.getParameter("sortOrder");
+		
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		DatabaseInterface databaseInterface = new DatabaseInterface();
@@ -78,7 +79,7 @@ public class AdministratorDataView extends HttpServlet {
 			{
 				if(TransactionNumber != null && !keywordMatcher.isEmpty(TransactionNumber) && !TransactionNumber.equals(allTransactions.get(i).transactionNumber))
 					continue;
-				if(ProductNumber != null && !keywordMatcher.isEmpty(ProductNumber) && !ProductNumber.equals(allTransactions.get(i).QR_Code))
+				if(ProductNumber != null && !keywordMatcher.isEmpty(ProductNumber) && !ProductNumber.equals(allTransactions.get(i).Product_ID))
 					continue;
 				if(Manufacturer != null && !keywordMatcher.isEmpty(Manufacturer) && !keywordMatcher.matchDataStrings(allTransactions.get(i).manufacturerName, Manufacturer))
 					continue;
@@ -90,7 +91,7 @@ public class AdministratorDataView extends HttpServlet {
 					continue;
 				if(OrganizationName != null && !keywordMatcher.isEmpty(OrganizationName) && !keywordMatcher.matchDataStrings(allTransactions.get(i).organizationName, OrganizationName))
 					continue;
-				if(Email != null && !keywordMatcher.isEmpty(Email) && !Email.equals(allTransactions.get(i).studentEmail))
+				if(Email != null && !keywordMatcher.isEmpty(Email) && !keywordMatcher.matchDataStrings(allTransactions.get(i).studentEmail, Email))
 					continue;
 				
 				transactionList.add(allTransactions.get(i));
@@ -118,7 +119,7 @@ public class AdministratorDataView extends HttpServlet {
 		else if(sortCriteria == 'I')
 			Collections.sort(transactionList, transactionComparator.new SortByCheckoutDateLow());
 		else if(sortCriteria == 'J')
-			Collections.sort(transactionList, transactionComparator.new SortByCheckinDateLow());
+			Collections.sort(transactionList, transactionComparator.new SortByActualCheckinDateLow());
 		else
 			Collections.sort(transactionList, transactionComparator.new SortByExpectedCheckinDateLow());
 			
@@ -146,7 +147,7 @@ public class AdministratorDataView extends HttpServlet {
 			else if(sortCriteria == 'I')
 				Collections.sort(transactionList, transactionComparator.new SortByCheckoutDateHigh());
 			else if(sortCriteria == 'J')
-				Collections.sort(transactionList, transactionComparator.new SortByCheckinDateHigh());
+				Collections.sort(transactionList, transactionComparator.new SortByActualCheckinDateHigh());
 			else
 				Collections.sort(transactionList, transactionComparator.new SortByExpectedCheckinDateHigh());
 		}
