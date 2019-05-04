@@ -51,7 +51,7 @@ public class CheckoutProduct extends HttpServlet {
 		String userDate = request.getParameter("ExpectedReturnDate");
 		KeywordMatcher keywordMatcher = new KeywordMatcher();
 		DatabaseInterface databaseInterface = new DatabaseInterface();
-		if(keywordMatcher.isEmpty(Product_ID))
+		if(keywordMatcher.isEmpty(Product_ID) || !keywordMatcher.isPositiveInteger(Product_ID))
 		{
 			response.getWriter().println("1");
 			return;
