@@ -28,9 +28,10 @@ public class UpdateProduct extends HttpServlet {
 		
 	}
 	
-	//the parameter QR_Code contains the QR Code of the product to be updated
+	//the parameter Product_ID contains the Product ID Number of the product to be updated
 	//the parameter manufacturer contains the new manufacturer name of the product
 	//the parameter product contains the new name for the product
+	//the parameter password contains the password for the website.
 	//if manufacturer or product name is null or consists only of white space (if isEmpty returns true) then that particular attribute is not updated for the product
 	
 	//a return value of 0 means the product's information was successfully updated
@@ -38,11 +39,10 @@ public class UpdateProduct extends HttpServlet {
 	//a return value of 2 means that the user entered in an invalid password, and needs to login again.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{	
-	String QR_Code = request.getParameter("QR_Code");
+	String Product_ID = request.getParameter("Product_ID");
 	String manufacturer = request.getParameter("manufacturer");
 	String product = request.getParameter("product");
 	String userPassword = request.getParameter("password");
-	String conditionList = "";
 	DatabaseInterface databaseInterface = new DatabaseInterface();
 	KeywordMatcher keywordMatcher = new KeywordMatcher();
 	if(databaseInterface.validatePassword(userPassword) == false)
@@ -51,13 +51,13 @@ public class UpdateProduct extends HttpServlet {
 		return;
 	}
 	
-	if(keywordMatcher.isEmpty(QR_Code))
+	if(keywordMatcher.isEmpty(Product_ID))
 	{
 		response.getWriter().println("1");
 		return;
 	}
 	
-	ArrayList<Product> productName = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+	ArrayList<Product> productName = databaseInterface.selectProductByProductID(Product_ID);
 	if(productName.size() == 0)
 	{
 		response.getWriter().println("1");
@@ -74,14 +74,9 @@ public class UpdateProduct extends HttpServlet {
 		response.getWriter().println("0");
 		return;
 	}
-	else if(manufacturer == null || keywordMatcher.isEmpty(manufacturer))
-		conditionList = " productName = '" + product + "' ";
-	else if(product == null || keywordMatcher.isEmpty(product))
-		conditionList = " manufacturer = '" + manufacturer + "' ";
-	else
-		conditionList = " productName = '" + product + "', manufacturer = '" + manufacturer + "' ";
+
 	
-	databaseInterface.updateProduct(QR_Code, conditionList);
+	databaseInterface.updateProduct(Product_ID, manufacturer, product);
 	response.getWriter().println("0");
 }
 }
