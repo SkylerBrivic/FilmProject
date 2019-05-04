@@ -20,10 +20,10 @@ var adminTableOrder = 1;
 //list transactions feature of the website.
 class Transaction
 {
-	 constructor(transactionNumber, QR_Code, manufacturerName, productName, studentNumber, studentName, studentEmail, organizationName, checkoutDate, checkinDate, expectedCheckinDate)
+	 constructor(transactionNumber, Product_ID, manufacturerName, productName, studentNumber, studentName, studentEmail, organizationName, checkoutDate, actualCheckinDate, expectedCheckinDate)
 	 {
 		 this.transactionNumber = transactionNumber;
-		 this.QR_Code = QR_Code;
+		 this.Product_ID = Product_ID;
 		 this.manufacturerName = manufacturerName;
 		 this.productName = productName;
 		 this.studentNumber = studentNumber;
@@ -31,7 +31,7 @@ class Transaction
 		 this.studentEmail = studentEmail;
 		 this.organizationName = organizationName;
 		 this.checkoutDate = checkoutDate;
-		 this.checkinDate = checkinDate;
+		 this.actualCheckinDate = actualCheckinDate;
 		 this.expectedCheckinDate = expectedCheckinDate;
 	 }
 	  
@@ -46,7 +46,7 @@ class Transaction
 //an exit code of 3 indicates that the requested operation could not be completed
 //if the database query succedded, then functionMessage stores the word(s) representing how to end
 //the update message (ex. for checkout products, function message would be "checked out" and the function status line would thus be updated to say
-//"product succesfully checked out"). If the query failed, then function message stores the error message to be displayed (ex. "Error: Product was not checked out to begin with"
+//"product succesfully checked out"). If the query failed because the requested operation could not be completed, then function message stores the error message to be displayed (ex. "Error: Product was not checked out to begin with"
 //would be the value of functionMessage if the user tried to checkin a product that wasn't checked out).
 function updateStatus(exitCode, functionMessage)
 {
@@ -94,7 +94,6 @@ function databaseLogin()
 					{
 					document.getElementById("loginConfirmation").innerHTML = "Login Successfull!";
 					document.getElementById("loginConfirmation").style = "display: inline; color: green;";
-					document.getElementById("searchFeature").style = "display: inline;";
 					document.getElementById("featureSelect").style = "display: inline";
 					checkoutProductFeatureLoad();
 					document.getElementById("checkoutRadio").checked = "checked";
@@ -119,7 +118,7 @@ function databaseLogin()
 }
 
 //adminDataLoad takes the sortCriteria from the user (what column to sort by) and uses this to call the servlet AdministratorDataView, which returns a list
-//of Transactions that match the user's search criteria
+//of Transactions that match the user's search criteria. adminDataLoad then displays the contents of this list in a table.
 function adminDataLoad(sortCriteria)
 {
 	var finalSort = sortCriteria + adminTableOrder.toString();
@@ -189,7 +188,7 @@ function adminDataLoad(sortCriteria)
 				var cell11 = row.insertCell(10);
 				
 				cell1.innerHTML = adminArray[index].transactionNumber;
-				cell2.innerHTML = adminArray[index].QR_Code;
+				cell2.innerHTML = adminArray[index].Product_ID;
 				cell3.innerHTML = adminArray[index].manufacturerName;
 				cell4.innerHTML = adminArray[index].productName;
 				
@@ -199,7 +198,7 @@ function adminDataLoad(sortCriteria)
 				cell7.innerHTML = adminArray[index].studentEmail;
 				cell8.innerHTML = adminArray[index].organizationName;
 				cell9.innerHTML = adminArray[index].checkoutDate;
-				cell10.innerHTML = adminArray[index].checkinDate;
+				cell10.innerHTML = adminArray[index].actualCheckinDate;
 				cell11.innerHTML = adminArray[index].expectedCheckinDate;
 			}
 			
@@ -261,14 +260,14 @@ function addProductDatabase()
 //deleteProductDatabase calls the servlet DeleteProduct, which deletes the product specified by the user from the database.
 function deleteProductDatabase()
 {
-var myQR = $("#deleteCode").val();	
+var myProdID = $("#deleteCode").val();	
 var returnValue = 5;
 
 $.ajax ({
 	url: 'DeleteProduct',
 	type: 'POST',
 	data: {
-		'QR_Code': myQR,
+		'Product_ID': myProdID,
 		'password': userPassword,
 		
 	},
@@ -279,7 +278,7 @@ $.ajax ({
 		if(returnValue == 0)
 			updateStatus(0, "deleted");
 		else if(returnValue == 1)
-			updateStatus(3, "Error: Invalid QR Code.");
+			updateStatus(3, "Error: Invalid Product ID Number.");
 		else
 			updateStatus(1, "");
 	},
@@ -296,7 +295,7 @@ $.ajax ({
 //the function databaseCheckout calls the servlet CheckoutProduct to check out a product for the user
 function databaseCheckout()
 {
-	var QR_Code = $("#checkoutQRCode").val();
+	var Product_ID = $("#checkoutProductIDNumber").val();
 	var StudentNumber = $("#checkoutStudentNumber").val();
 	var StudentName = $("#checkoutStudentName").val();
 	var OrganizationName = $("#checkoutOrganizationName").val();
@@ -308,7 +307,7 @@ function databaseCheckout()
          url: 'CheckoutProduct',
          type: 'POST',
          data: {
-             'QR_Code': QR_Code,
+             'Product_ID': Product_ID,
              'StudentNumber': StudentNumber,
              'StudentName': StudentName,
              'OrganizationName': OrganizationName,
@@ -323,7 +322,7 @@ function databaseCheckout()
          if(returnValue == 0)
         	 updateStatus(0, "checked out");
          else if(returnValue == 1)
-        	 updateStatus(3, "Error: Invalid QR Code entered");
+        	 updateStatus(3, "Error: Invalid Product ID Number entered");
          else if(returnValue == 2)
         	 updateStatus(3, "Error: Product already checked out by somebody else");
          else if(returnValue == 4)
@@ -332,9 +331,6 @@ function databaseCheckout()
         	 updateStatus(3, "Error: Organization Name may not be left blank");
          else if(returnValue == 6 || returnValue == 7)
         	 updateStatus(3, "Error: Expected Return Date must be filled in with yyyy-MM-dd format date (ex. 2019-06-10)");
-         else if(returnValue == 8)
-        	 updateStatus(3, "Error: Student Number may not be left blank");
-         
          else
         	 updateStatus(1, "");
          	 
@@ -349,14 +345,14 @@ function databaseCheckout()
 //the databaseCheckin() function calls the CheckinProduct servlet to check a product back in for a user
 function databaseCheckin()
 {
-	var QR_Code = $("#checkinQRCode").val();
+	var Product_ID = $("#checkinProductIDNumber").val();
 	var returnValue = 5;
 	
 	 $.ajax({
          url: 'CheckinProduct',
          type: 'POST',
          data: {
-             'QR_Code': QR_Code,
+             'Product_ID': Product_ID,
              'password': userPassword,
           
          },
@@ -367,7 +363,7 @@ function databaseCheckin()
          if(returnValue == 0)
         	 updateStatus(0, "checked back in");
          else if(returnValue == 1)
-        	 updateStatus(3, "Error: Invalid QR Code was entered");
+        	 updateStatus(3, "Error: Invalid Product ID Number was entered");
          
          else if(returnValue == 2)
          {
@@ -390,7 +386,7 @@ function databaseCheckin()
 //databaseUpdate() updates the information of the product in the database specified by the user via the UpdateProduct servlet
 function databaseUpdate()
 {
-	var QR_Code = $("#updateProductQRCode").val();
+	var Product_ID = $("#updateProductIDNumber").val();
 	var manufacturer = $("#updateManufacturerName").val();
 	var product = $("#updateProductName").val();
 	var returnValue = 5;
@@ -399,7 +395,7 @@ function databaseUpdate()
          url: 'UpdateProduct',
          type: 'POST',
          data: {
-             'QR_Code': QR_Code,
+             'Product_ID': Product_ID,
              'manufacturer': manufacturer,
              'product': product,
              'password': userPassword,
@@ -414,7 +410,7 @@ function databaseUpdate()
         
          else if(returnValue == 1)
          {
-        	updateStatus(3, "Error: Invalid QR Code was entered.");
+        	updateStatus(3, "Error: Invalid Product ID Number was entered.");
          }
          else
         	updateStatus(1, "");
@@ -589,7 +585,7 @@ table, tr, th{background-color: white;}
 </head>
 <body style = "background-color: Ivory; font-size: 1.20vw; font-family: 'Heveltica'">
 <header>
-<!-- This section contains the main navigatiom bar for the website, with links to the other pages of the website here -->
+<!-- This section contains the main navigation bar for the website, with links to the other pages of the website here -->
 <div class = "headerBanner">
 		<div class = "headerLink">
 			<a class = "linkFormat" href = "userWelcomePage.jsp">Home</a>
@@ -625,13 +621,13 @@ Site Password: <input type = "password" id = "Password" style = "margin-left: 0.
 </div>
 
 <div id = "checkoutFeature" style = "display: none;">
-<h5>Enter in the product ID number/QR Code of the product to be checked out and the information about the person checking the equipment out: </h5>
+<h5>Enter in the product ID number of the product to be checked out and the information about the person checking the equipment out: </h5>
 <form>
-<span style = "color: red;">*</span> Product ID Number/QR Code: <input type = "text" id = "checkoutQRCode" style = "margin-left: 0.3vw;"> <br>
+<span style = "color: red;">*</span> Product ID Number: <input type = "text" id = "checkoutProductIDNumber" style = "margin-left: 5.03vw;"> <br>
 <span style = "color: red;">*</span> Student Name: <input type = "text" id = "checkoutStudentName" style = "margin-left: 7.66vw; margin-right: 11vw;">
 <span style = "color: red;">*</span> Expected Return Date: <input type = "date" style = "margin-left: 1.5vw;" id = "checkoutReturnDate"><br>
-<span style = "color: red;">*</span> Organization Name: <input type = "text" id = "checkoutOrganizationName" style = "margin-left: 5.1vw; margin-right: 11.05vw;">
-<span style = "color: red;">*</span> Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margin-left: 4.16vw;"> <br>
+<span style = "color: red;">*</span> Organization Name: <input type = "text" id = "checkoutOrganizationName" style = "margin-left: 5.1vw; margin-right: 11.9vw;">
+Student Number: <input type = "text" id = "checkoutStudentNumber" style = "margin-left: 4.16vw;"> <br>
 &nbsp;&nbsp;&nbsp;Email Address (optional): <input type = "text" id = "checkoutEmailAddress" style = "margin-left: 2.5vw;"><br>
 <input type = "button" onclick = "databaseCheckout()" value = "Check Out">
 </form>
@@ -639,9 +635,9 @@ Site Password: <input type = "password" id = "Password" style = "margin-left: 0.
 </div>
 
 <div id = "checkinFeature" style = "display: none;">
-<h5>Enter in the Product ID number/QR Code of the product to be checked back in: </h5>
+<h5>Enter in the Product ID number of the product to be checked back in: </h5>
 <form>
-<span style = "color: red;">*</span> Product ID Number/QR Code: <input type = "text" id = "checkinQRCode"><br>
+<span style = "color: red;">*</span> Product ID Number/Product ID Number: <input type = "text" id = "checkinProductIDNumber"><br>
 <input type = "button" onclick = "databaseCheckin()" style = "margin-left: 0.2vw;" value = "Check In">
 </form>
 <p> <span style = "color: red;">*</span> = required field </p>
@@ -694,20 +690,20 @@ Organization Name: <input style = "margin-right: 8.85vw; margin-left: 0.7vw;" ty
 </div>
 
 <div id = "deleteProducts" style = "display: none;">
-<h5>Type in the QR Code/Product ID Number of the product you want to remove from the database</h5>
+<h5>Type in the Product ID Number of the product you want to remove from the database</h5>
 <p style = "font-size: 1vw;">Note: Doing this will delete any transactions from the administrator's records that contain the item that is being deleted</p>
 <form>
-<span style = "color: red;">*</span> QR Code/Product ID Number: <input type = "text" id = "deleteCode"><br>
+<span style = "color: red;">*</span> Product ID Number/Product ID Number: <input type = "text" id = "deleteCode"><br>
 <input type = "button" onclick = "deleteProductDatabase()" value = "Delete">
 </form>
 <p> <span style = "color: red;">*</span> = required field </p>
 </div>
 
 <div id = "updateProducts" style = "display: none;">
-<h5>Type in the QR Code/Product ID Number of the product whose information you would like to update. Then, type in what you would like the new product name and manufacturer name for his product to be</h5>
+<h5>Type in the Product ID Number of the product whose information you would like to update. Then, type in what you would like the new product name and manufacturer name for his product to be</h5>
 <form>
-<span style = "color: red;">*</span> QR Code/Product ID Number: <input type = "text" id = "updateProductQRCode" style = "margin-left: 0.2vw;"><br>
-&nbsp;&nbsp;&nbsp;Manufacturer Name: <input type = "text" id = "updateManufacturerName" style = "margin-left: 4.75vw; margin-right: 5vw;">Product Name: <input type = "text" id = "updateProductName" style = "margin-left: 0.2vw;"><br>
+<span style = "color: red;">*</span> Product ID Number: <input type = "text" id = "updateProductIDNumber" style = "margin-left: 1vw;"><br>
+&nbsp;&nbsp;&nbsp;Manufacturer Name: <input type = "text" id = "updateManufacturerName" style = "margin-left: 0.8vw; margin-right: 5vw;">Product Name: <input type = "text" id = "updateProductName" style = "margin-left: 0.2vw;"><br>
 <input type = "button" onclick = "databaseUpdate()" value = "Update">
 </form>
 <p> <span style = "color: red;">*</span> = required field </p>
