@@ -48,7 +48,7 @@ public class CheckinProduct extends HttpServlet {
 		response.getWriter().println("3");
 		return;
 	}
-	if(keywordMatcher.isEmpty(Product_ID))
+	if(keywordMatcher.isEmpty(Product_ID) || !keywordMatcher.isPositiveInteger(Product_ID))
 	{
 		response.getWriter().println("1");
 		return;
