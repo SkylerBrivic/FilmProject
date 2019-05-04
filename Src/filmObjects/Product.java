@@ -4,16 +4,16 @@ package filmObjects;
 //the checkoutDate of the product (if it is currently checked out), and the checkinDate of the product (both date Strings are in yyyy-MM-dd format).
 public class Product {
 	
-	public String QR_Code, ManufacturerName, ProductName, checkoutDate, checkinDate;
+	public String Product_ID, ManufacturerName, ProductName, checkoutDate, checkinDate;
 	
 	public Product()
 	{
-		QR_Code = ManufacturerName = ProductName = checkoutDate = checkinDate = "";
+		Product_ID = ManufacturerName = ProductName = checkoutDate = checkinDate = "";
 		
 	}
-	public Product(String new_QR, String newManufacturer, String newProduct, String newOutDate, String newReturnDate)
+	public Product(String new_Product_ID, String newManufacturer, String newProduct, String newOutDate, String newReturnDate)
 	{
-		QR_Code = new_QR;
+		Product_ID = new_Product_ID;
 		ManufacturerName = newManufacturer;
 		ProductName = newProduct;
 		checkoutDate = newOutDate;
