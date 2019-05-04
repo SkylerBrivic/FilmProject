@@ -31,10 +31,10 @@ public class ListProducts extends HttpServlet {
 		}
 
 	
-	//the parameter manufacturer stores the requested manufacturer's name
-	//the parameter product stores the requested product's name
 	//the parameter sortOrder contains a String, whose first character represents what category to sort by (A for the Product ID, B for the second column, and so forth)
 	//and the rest of the string after that contains either 1 (for forward sort) or -1 (for backwards sort)
+	//the parameter manufacturer stores the requested manufacturer's name
+	//the parameter product stores the requested product's name
 	//an ArrayList of all the ProductAggregates matching the user's request is returned by the servlet.
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
@@ -103,7 +103,7 @@ public class ListProducts extends HttpServlet {
 		
 		if(i < productList.size() - 1)
 		{
-			if(productList.get(i).ManufacturerName.equalsIgnoreCase(productList.get(i+1).ManufacturerName) && productList.get(i).ProductName.equalsIgnoreCase(productList.get(i+1).ManufacturerName))
+			if(!productList.get(i).ManufacturerName.equalsIgnoreCase(productList.get(i+1).ManufacturerName) || !productList.get(i).ProductName.equalsIgnoreCase(productList.get(i+1).ProductName))
 				firstEntryOfKind = true;
 		}
 		
@@ -127,7 +127,6 @@ public class ListProducts extends HttpServlet {
 			else if(sortCriteria == 'B')
 				Collections.sort(finalProductList, productAggregateComparator.new SortByManufacturerNameHigh());
 			
-			
 		}
 		
 		Gson gson = new Gson();
@@ -136,4 +135,3 @@ public class ListProducts extends HttpServlet {
 	}
 
 }
-
