@@ -31,8 +31,9 @@ public class AddProduct extends HttpServlet {
 	//the parameter manufacturer stores the manufacturer's name
 	//the parameter productName stores the product's name
 	//the parameter quantity stores the number of items to insert into the database
-	//if the user entered in a valid password earlier to log in and a valid quantity, then the function returns 0. Otherwise, if the password was wrong, it returns 1 and the user's
-	//request is denied. If the user entered in an invalid quantity (ie. <= 0 or not an int) then 2 is returned.
+	//the parameter password stores the website's password
+	//if the user entered in a valid password earlier to log in and a valid quantity (along with a product name and a manufacturer name), then the function returns 0, and the product is added to the database. 
+	//Otherwise, if the password was wrong, it returns 1 and the user's request is denied. If the user entered in an invalid quantity (ie. <= 0 or not an int) then 2 is returned and the product is not added to the database.
 	//if the user did not enter in a product name or manufacturer name, then 3 is returned and the product is not added to the database.
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
@@ -84,3 +85,4 @@ public class AddProduct extends HttpServlet {
 		return;
 		}		
 	}
+
