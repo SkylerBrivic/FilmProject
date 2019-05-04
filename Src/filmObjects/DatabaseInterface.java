@@ -28,13 +28,19 @@ public DatabaseInterface()
 	parseFile();
 }
 
+//selectProductByProductID returns an ArrayList containing the product object representing the product with the Product ID specified by Product_ID
+public ArrayList<Product> selectProductByProductID(String Product_ID)
+{
+	return selectProduct(" WHERE Product_ID = " + Product_ID);
+}
 //conditionList is the portion of the conditions following the word WHERE in the query (ex. conditionList could be " productName = 'RGB'")
 //conditionList should start with a space
 //this function returns an ArrayList of Products which represent all products that match the search criteria specified by the user in conditionList
+//if the conditionList is the empty string ("") then an ArrayList of all products will be returned.
 public ArrayList<Product> selectProduct(String conditionList)
 {
 	ArrayList<Product> returnList = new ArrayList<Product>();
-	String tempQR = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null;
+	String tempProductID = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null;
 	ResultSet mainResultSet = null;
 	if(dataIsUpdated == false)
 		parseFile();
@@ -53,9 +59,9 @@ public ArrayList<Product> selectProduct(String conditionList)
 		mainResultSet = statement.executeQuery(myQuery);
 		while(mainResultSet.next())
 		{
-			tempQR = mainResultSet.getString(productTableName + ".QR_Code");
-			if(tempQR == null)
-				tempQR = "N/A";
+			tempProductID = mainResultSet.getString(productTableName + ".Product_ID");
+			if(tempProductID == null)
+				tempProductID = "N/A";
 			tempManufacturerName = mainResultSet.getString(productTableName + ".manufacturer");
 			if(tempManufacturerName == null)
 				tempManufacturerName = "N/A";
@@ -69,7 +75,7 @@ public ArrayList<Product> selectProduct(String conditionList)
 			else
 			{
 				Statement otherStatement = connection.createStatement();
-				ResultSet otherResultSet = otherStatement.executeQuery("SELECT * from " + transactionTableName + " WHERE QR_Code = " + tempQR + " AND checkinDate IS NULL;");
+				ResultSet otherResultSet = otherStatement.executeQuery("SELECT * from " + transactionTableName + " WHERE Product_ID = " + tempProductID + " AND actualCheckinDate IS NULL;");
 				if(otherResultSet.next())
 			{
 					tempCheckoutDate = otherResultSet.getString(transactionTableName + ".checkoutDate");
@@ -78,7 +84,7 @@ public ArrayList<Product> selectProduct(String conditionList)
 				tempCheckoutDate = "N/A";
 			}
 			tempCheckinDate = "N/A";
-			returnList.add(new Product(tempQR, tempManufacturerName, tempProductName, tempCheckoutDate, tempCheckinDate));
+			returnList.add(new Product(tempProductID, tempManufacturerName, tempProductName, tempCheckoutDate, tempCheckinDate));
 		}
 	}
 	catch(SQLException e)
@@ -99,7 +105,7 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 {
 	ArrayList<Transaction> returnList = new ArrayList<Transaction>();
 	ResultSet mainResultSet = null;
-	String tempTransactionNumber = null, tempQR = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null, tempStudentName = null, tempStudentNumber = null, tempOrganizationName = null, tempEmail = null, tempExpectedReturnDate = null;
+	String tempTransactionNumber = null, tempProductID = null, tempManufacturerName = null, tempProductName = null, tempCheckoutDate = null, tempCheckinDate = null, tempStudentName = null, tempStudentNumber = null, tempOrganizationName = null, tempEmail = null, tempExpectedReturnDate = null;
 	if(dataIsUpdated == false)
 		parseFile();
 	
@@ -120,9 +126,9 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 			tempTransactionNumber = mainResultSet.getString(transactionTableName + ".transactionNumber");
 			if(tempTransactionNumber == null)
 				tempTransactionNumber = "N/A";
-			tempQR = mainResultSet.getString(productTableName + ".QR_Code");
-			if(tempQR == null)
-				tempQR = "N/A";
+			tempProductID = mainResultSet.getString(productTableName + ".Product_ID");
+			if(tempProductID == null)
+				tempProductID = "N/A";
 			tempManufacturerName = mainResultSet.getString(productTableName + ".manufacturer");
 			if(tempManufacturerName == null)
 				tempManufacturerName = "N/A";
@@ -132,7 +138,7 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 			tempCheckoutDate = mainResultSet.getString(transactionTableName + ".checkoutDate");
 			if(tempCheckoutDate == null)
 				tempCheckoutDate = "N/A";
-			tempCheckinDate = mainResultSet.getString(transactionTableName + ".checkinDate");
+			tempCheckinDate = mainResultSet.getString(transactionTableName + ".actualCheckinDate");
 			if(tempCheckinDate == null)
 				tempCheckinDate = "N/A";
 			tempStudentName = mainResultSet.getString(studentTableName + ".StudentName");
@@ -152,7 +158,7 @@ public ArrayList<Transaction> selectTransaction(String conditionList)
 				tempExpectedReturnDate = "N/A";
 			
 			
-			returnList.add(new Transaction(tempTransactionNumber, tempQR, tempManufacturerName, tempProductName, tempStudentNumber, tempStudentName, tempEmail, tempOrganizationName, tempCheckoutDate, tempCheckinDate, tempExpectedReturnDate));
+			returnList.add(new Transaction(tempTransactionNumber, tempProductID, tempManufacturerName, tempProductName, tempStudentNumber, tempStudentName, tempEmail, tempOrganizationName, tempCheckoutDate, tempCheckinDate, tempExpectedReturnDate));
 			
 		}
 	}
@@ -177,10 +183,10 @@ public ArrayList<Transaction> selectTransaction(int availabilityStatus)
 {
 	String myQuery = " WHERE ";
 	if(availabilityStatus == 1)
-		myQuery += " checkinDate IS NOT NULL AND ";
+		myQuery += " actualCheckinDate IS NOT NULL AND ";
 	else if(availabilityStatus == 2)
-		myQuery += " checkinDate IS NULL AND ";
-	myQuery += (productTableName + ".QR_Code = " + transactionTableName + ".QR_Code AND " + transactionTableName + ".StudentNumber = " + studentTableName + ".StudentNumber"); 
+		myQuery += " actualCheckinDate IS NULL AND ";
+	myQuery += (productTableName + ".Product_ID = " + transactionTableName + ".Product_ID AND " + transactionTableName + ".PrimaryStudentKey = " + studentTableName + ".StudentPrimaryKey"); 
 	return selectTransaction(myQuery);
 }
 
@@ -216,11 +222,20 @@ public void addProduct(String manufacturerName, String productName, int quantity
 	
 }
 
-//updateProduct takes as input the Product ID/QR_Code number of the product to be updated, and the conditionList specifying what
-//the product should be changed to (this is assumed to be following the "SET" keyword, and should start with a space)
-//the function updates the entry in the database with the specified QR Code.
-public void updateProduct(String QR_Code, String conditionList)
+//updateProduct takes as input the Product ID number of the product to be updated, and the name of the manufacturer and 
+//the product name that the product should be changed to. The function updates the entry in the database with the specified Product ID number.
+public void updateProduct(String Product_ID, String Manufacturer, String Product)
 {
+	String conditionList = "";
+	if(Manufacturer.isEmpty() && Product.isEmpty())
+		return;
+	else if(Manufacturer.isEmpty())
+		conditionList = "productName = '" + Product + "' ";
+	else if(Product.isEmpty())
+		conditionList = "Manufacturer = '" + Manufacturer + "' ";
+	else
+		conditionList = "productName = '" + Product + "', Manufacturer = '" + Manufacturer + "' ";
+		
 	if(dataIsUpdated == false)
 		parseFile();
 	
@@ -231,7 +246,7 @@ public void updateProduct(String QR_Code, String conditionList)
 		return;
 	}
 	
-	String myQuery = "UPDATE " + productTableName + " SET " + conditionList + " WHERE QR_Code = " + QR_Code + ";";
+	String myQuery = "UPDATE " + productTableName + " SET " +  conditionList + " WHERE Product_ID = " + Product_ID + ";";
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
@@ -243,11 +258,12 @@ public void updateProduct(String QR_Code, String conditionList)
 	}
 }
 
-//This function takes as input the Product ID/QR Code of the product that the user is checking out, the student number of the student checking the product out,
+//This function takes as input the Product ID Number of the product that the user is checking out, the student number of the student checking the product out,
 //the name of the student checking the product out, the organization name of the student, the student's email, and the estimated return date
-//for the product (in yyyy-MM-dd format). The function updates the database to reflect checking out the product specified by QR_Code
-public void checkoutProduct(String QR_Code, String studentNumber, String studentName, String organizationName, String email, String returnDate)
+//for the product (in yyyy-MM-dd format). The function updates the database to reflect checking out the product specified by Product_ID
+public void checkoutProduct(String Product_ID, String studentNumber, String studentName, String organizationName, String email, String returnDate)
 {
+	String studentKey = "";
 	if(dataIsUpdated == false)
 		parseFile();
 	
@@ -258,33 +274,23 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 		return;
 	}
 	String myQuery = "";
-	KeywordMatcher keywordMatcher = new KeywordMatcher();
-	
-	myQuery = "SELECT * from " + studentTableName + " WHERE studentNumber = '" + studentNumber + "';";
 	
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(myQuery);
-		if(resultSet.next())
-		{
-			if(email != null && !email.equalsIgnoreCase("N/A") && !keywordMatcher.isEmpty(email))
-			{	
-				myQuery = "UPDATE " + studentTableName + " SET email = '" + email + "';";
-				Statement otherStatement = connection.createStatement();
-				otherStatement.executeUpdate(myQuery);	
-			}
-			
-		}
-		else
-		{
-			myQuery = "INSERT INTO " + studentTableName + " VALUES ('" + studentNumber + "', '" + studentName + "', '" + organizationName + "', '" + email + "');";	
+	
+			myQuery = "INSERT INTO " + studentTableName + "(StudentNumber, StudentName, OrganizationName, Email) VALUES ('" + studentNumber + "', '" + studentName + "', '" + organizationName + "', '" + email + "');";	
 			statement.executeUpdate(myQuery);
-		}
+			
+			Statement otherStatement = connection.createStatement();
+			ResultSet mySet = otherStatement.executeQuery("SELECT MAX(StudentPrimaryKey) from " + studentTableName + ";");
+			if(mySet.next())
+				studentKey = mySet.getString(1);
+			
 		
-		myQuery = "INSERT INTO " + transactionTableName + " (QR_Code, StudentNumber, checkoutDate, checkinDate, expectedCheckinDate) VALUES (" + QR_Code + ", '" + studentNumber + "', CURRENT_DATE, NULL, '" + returnDate + "');";
+		myQuery = "INSERT INTO " + transactionTableName + " (PrimaryStudentKey, Product_ID, checkoutDate, actualCheckinDate, expectedCheckinDate) VALUES (" + studentKey + ", " + Product_ID + ", CURRENT_DATE, NULL, '" + returnDate + "');";
 		statement.executeUpdate(myQuery);
-		myQuery = "UPDATE " + productTableName + " SET isAvailable = 0 WHERE QR_Code = " + QR_Code + ";";
+		myQuery = "UPDATE " + productTableName + " SET isAvailable = 0 WHERE Product_ID = " + Product_ID + ";";
 		statement.executeUpdate(myQuery);
 		
 	}
@@ -294,9 +300,9 @@ public void checkoutProduct(String QR_Code, String studentNumber, String student
 	}
 }
 
-//this function takes as input a String representing the product ID number/QR Code of an item in the database.
+//this function takes as input a String representing the product ID Number of an item in the database.
 //the function deletes that item from the product list table, along with any transactions that included the item.
-public void deleteProduct(String QR_Code)
+public void deleteProduct(String Product_ID)
 {
 	if(dataIsUpdated == false)
 		parseFile();
@@ -307,12 +313,12 @@ public void deleteProduct(String QR_Code)
 		System.exit(1);
 		return;
 	}
-	String myQuery = "Delete from " + transactionTableName + " WHERE  QR_Code = " + QR_Code + ";";
+	String myQuery = "Delete from " + transactionTableName + " WHERE  Product_ID = " + Product_ID + ";";
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(myQuery);
-		myQuery = "DELETE FROM " + productTableName + " WHERE QR_Code = " + QR_Code + ";";
+		myQuery = "DELETE FROM " + productTableName + " WHERE Product_ID = " + Product_ID + ";";
 		statement.executeUpdate(myQuery);
 	}
 	catch(SQLException e)
@@ -321,9 +327,9 @@ public void deleteProduct(String QR_Code)
 	}
 	
 }
-//this function takes as input the QR Code of the product that the user is going to check in.
+//this function takes as input the Product ID Number of the product that the user is going to check in.
 //the function updates the database appropriately to reflect the fact that the product is now checked back in.
-public void checkinProduct(String QR_Code)
+public void checkinProduct(String Product_ID)
 {
 	if(dataIsUpdated == false)
 		parseFile();
@@ -335,12 +341,12 @@ public void checkinProduct(String QR_Code)
 		return;
 	}
 	
-	String myQuery = "UPDATE " + transactionTableName + " SET checkinDate = CURRENT_DATE WHERE checkinDate IS NULL AND QR_Code = " + QR_Code + ";";
+	String myQuery = "UPDATE " + transactionTableName + " SET actualCheckinDate = CURRENT_DATE WHERE actualCheckinDate IS NULL AND Product_ID = " + Product_ID + ";";
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
 		statement.executeUpdate(myQuery);
-		myQuery = "UPDATE " + productTableName + " SET isAvailable = 1 WHERE QR_Code = " + QR_Code + ";";
+		myQuery = "UPDATE " + productTableName + " SET isAvailable = 1 WHERE Product_ID = " + Product_ID + ";";
 		statement.executeUpdate(myQuery);
 	}
 	catch(SQLException e)
@@ -374,7 +380,7 @@ public boolean validatePassword(String userEnteredPassword)
 		
 		if(resultSet.next())
 		{
-			if(resultSet.getString(1).equals(userEnteredPassword))
+			if(resultSet.getString("Password").equals(userEnteredPassword))
 				isValid = true;
 		}
 	}
@@ -398,7 +404,7 @@ public boolean updatePassword(String oldPassword, String newPassword)
 	try(Connection connection = DriverManager.getConnection("jdbc:mysql://" + serverName + "/" + databaseName, username, databasePassword))
 	{
 		Statement statement = connection.createStatement();
-		 statement.executeUpdate(myQuery);
+	    statement.executeUpdate(myQuery);
 	}
 	catch(SQLException e)
 	{}
