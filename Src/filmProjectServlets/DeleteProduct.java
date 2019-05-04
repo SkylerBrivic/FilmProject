@@ -28,14 +28,15 @@ public class DeleteProduct extends HttpServlet {
 	}
 
 	
-	//the parameter QR_Code contains the QR Code of the product to be deleted
+	//the parameter Product_ID contains the Product ID Number of the product to be deleted
+	//the parameter password contains the website's password.
 	//a return value of 0 means the product was succesfully deleted, and any entries associated with it in the checkoutList table have been deleted.
 	//a return value of 1 means the QR Code was invalid or already deleted
 	//a return value of 2 means that the user used an invalid password, and needs to log in again.
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-	String QR_Code = request.getParameter("QR_Code");
+	String Product_ID = request.getParameter("Product_ID");
 	String password = request.getParameter("password");
 	DatabaseInterface databaseInterface = new DatabaseInterface();
 	KeywordMatcher keywordMatcher = new KeywordMatcher();
@@ -45,20 +46,19 @@ public class DeleteProduct extends HttpServlet {
 		return;
 	}
 	
-	if(keywordMatcher.isEmpty(QR_Code))
+	if(keywordMatcher.isEmpty(Product_ID))
 	{
 		response.getWriter().println("1");
 		return;
 	}
 	
-	ArrayList<Product> myProduct = databaseInterface.selectProduct(" WHERE QR_Code = " + QR_Code);
+	ArrayList<Product> myProduct = databaseInterface.selectProductByProductID(Product_ID);
 	if(myProduct.size() == 0)
 	{
 		response.getWriter().println("1");
 		return;
 	}
-	databaseInterface.deleteProduct(QR_Code);
+	databaseInterface.deleteProduct(Product_ID);
 	response.getWriter().println("0");
 	}
 }
-
