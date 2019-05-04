@@ -1,4 +1,3 @@
-
 package filmObjects;
 
 import java.text.*;
@@ -13,7 +12,7 @@ public class TransactionComparator
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			return (new BigInteger(firstProduct.QR_Code).compareTo(new BigInteger(secondProduct.QR_Code)));
+			return (new BigInteger(firstProduct.Product_ID).compareTo(new BigInteger(secondProduct.Product_ID)));
 		}
 	}
 	
@@ -21,7 +20,7 @@ public class TransactionComparator
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			return (new BigInteger(secondProduct.QR_Code).compareTo(new BigInteger(firstProduct.QR_Code)));		}
+			return (new BigInteger(secondProduct.Product_ID).compareTo(new BigInteger(firstProduct.Product_ID)));		}
 	}
 	
 	public class SortByTransactionLow implements Comparator<Transaction>
@@ -125,17 +124,17 @@ public class TransactionComparator
 			return -1;
 		}
 	}
-	public class SortByCheckinDateLow implements Comparator<Transaction>
+	public class SortByActualCheckinDateLow implements Comparator<Transaction>
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			if(firstProduct.checkinDate.equals("N/A"))
+			if(firstProduct.actualCheckinDate.equals("N/A"))
 				return -1;
-			if(secondProduct.checkinDate.equals("N/A"))
+			if(secondProduct.actualCheckinDate.equals("N/A"))
 				return 1;
 			try {
-			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkinDate);
-			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkinDate);
+			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.actualCheckinDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.actualCheckinDate);
 			return firstDate.compareTo(secondDate);
 			
 			}
@@ -145,17 +144,17 @@ public class TransactionComparator
 		}
 	}
 	
-	public class SortByCheckinDateHigh implements Comparator<Transaction>
+	public class SortByActualCheckinDateHigh implements Comparator<Transaction>
 	{
 		public int compare(Transaction firstProduct, Transaction secondProduct)
 		{
-			if(firstProduct.checkinDate.equals("N/A"))
+			if(firstProduct.actualCheckinDate.equals("N/A"))
 				return 1;
-			if(secondProduct.checkinDate.equals("N/A"))
+			if(secondProduct.actualCheckinDate.equals("N/A"))
 				return -1;
 			try {
-			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.checkinDate);
-			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.checkinDate);
+			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse(firstProduct.actualCheckinDate);
+			Date secondDate = new SimpleDateFormat("yyyy-MM-dd").parse(secondProduct.actualCheckinDate);
 			return secondDate.compareTo(firstDate);
 			
 			}
