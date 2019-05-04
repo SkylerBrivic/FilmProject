@@ -31,8 +31,8 @@ public class ChangePassword extends HttpServlet {
 	//the old password entered in by the user is stored in the parameter oldPassword
 	//the new password the user has requested is stored in the parameter newPassword
 	//if the value of oldPassword matches the password stored in the database, then the password
-	//in the database is updated to be the new password, and 0 is returned. Otherwise, the password
-	//is not changed and 1 is returned.
+	//in the database is updated to be the new password, and 0 is returned. If the passwords did not match,
+	//then the password is not changed, and 1 is returned.
 	//If the new password was not entered in, then 2 is returned
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
