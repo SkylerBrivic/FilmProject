@@ -3,14 +3,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href = "NavigationBar.css" rel = "stylesheet" type = "text/css">
 <style>
+body{margin: 0;}
 .headerBanner{min-width: 100vw; height: 3vw; position: absolute; top: 0vw; left: 0vw; background-color: red;}
 .headerLink{margin-right: 4vw; background-color: red; padding-left: 1vw; padding-right: 1vw; padding-top: 0.25vw; padding-bottom: 0.1vw; display: inline-block; font-size: 2.30vw; text-align: center;}
 .headerLink:hover{background-color: orange;}
 .linkFormat{color: white; text-decoration: none;}
 .headingFormat{position: relative; top: 2vw; left: 45vw; color: black; font-family: Heveltica; size: 2vw;}
-.footer{margin-left: 30vw; color: navy; font-family: "Times New Roman";}
-
+.footer{text-align: center; color: navy; font-family: "Times New Roman"; margin-top: 1.3vw;}
 
 .boxTitle{font-family: "Heveltica"; font-size: 1.6vw; text-weight: bold; text-align: center; margin-bottom: 1vw; margin-top: 1.5vw;}
 .ProductFormatBox{min-width: 18vw; min-height: 18vw; background-color: #EEEEEE; color: #0769AD; border-radius: 1vw; margin-left: 2vw; margin-bottom: 2vw;}
@@ -115,21 +116,15 @@ Additionally, there is a search bar where the user can search for products that 
 </head>
 <body style = "background-color: LightYellow;">
 <header>
-<!-- This section contains the top navigation bar for the website, which contains links to all the other pages of the website. -->
-<div class = "headerBanner">
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "userWelcomePage.jsp">Home</a>
-		</div>
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "login.jsp">Login</a>
-		</div>
-		<div class = "headerLink">
-			<a class = "linkFormat" href = "viewProducts.jsp">View Products</a>
-		</div>
+<!-- This section contains the main navigation bar for the website, with links to the other pages of the website here -->
+<div class = "w3-bar w3-red" style = "margin-bottom: 0vw;">
+	<a href="userWelcomePage.jsp" class="w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">Home</a>
+	<a href = "login.jsp" class = "w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">Login</a>
+	<a href = "viewProducts.jsp" class = "w3-bar-item w3-button w3-mobile w3-hover-orange w3-hover-text-white" style = "font-size: 2.3vw; margin-right: 4vw; padding-top: 0.2vw; padding-bottom: 0.2vw;">View Products</a>
 </div>
 </header>
-<h1 class = "headingFormat">View Products: </h1>
-<h5>Type in a product name or manufacturer name to narrow your search for products.</h5>
+<h1 style = "margin-top: 0.4vw; margin-left: 0.2vw; margin-bottom: 0.1vw; padding: 0; text-align: center;">View Products: </h1>
+<h5 style = "margin: 0; margin-bottom: 1vw;">Type in a product name or manufacturer name to narrow your search for products.</h5>
 <form>
 Manufacturer Name: <input type = "text" id = "manufacturerText" style = "margin-right: 3vw;">
 Product Name: <input type = "text" id = "productNameText"><br>
