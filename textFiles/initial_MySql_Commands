@@ -2,11 +2,25 @@ Create database FilmProject;
 
 Use FilmProject;
 
-create TABLE ProductList ( QR_Code int PRIMARY KEY AUTO_INCREMENT, manufacturer varchar(255), productName varchar(255), isAvailable tinyint(1));
+create TABLE ProductList ( Product_ID int PRIMARY KEY AUTO_INCREMENT, 
+manufacturer varchar(255), 
+productName varchar(255),
+ isAvailable tinyint(1));
 
-create Table studentList (StudentNumber varchar(255) PRIMARY KEY, StudentName varchar(255), OrganizationName varchar(255), Email varchar(255));
+create Table studentList (StudentPrimaryKey BIGINT PRIMARY KEY AUTO_INCREMENT,
+StudentNumber varchar(255), 
+StudentName varchar(255), 
+OrganizationName varchar(255), 
+Email varchar(255));
 
-create Table checkoutList ( transactionNumber int PRIMARY KEY AUTO_INCREMENT, QR_Code int, StudentNumber varchar(255), checkoutDate DATE, checkinDate DATE, expectedCheckinDate DATE, FOREIGN KEY (QR_Code) REFERENCES ProductList(QR_Code), FOREIGN KEY checkoutList(StudentNumber) REFERENCES studentList(StudentNumber));
+create Table checkoutList ( transactionNumber BIGINT PRIMARY KEY AUTO_INCREMENT, 
+PrimaryStudentKey BIGINT, 
+Product_ID int, 
+checkoutDate DATE, 
+actualCheckinDate DATE, 
+expectedCheckinDate DATE, 
+Constraint prodID FOREIGN KEY checkoutList(Product_ID) REFERENCES ProductList(Product_ID), 
+Constraint studID FOREIGN KEY checkoutList(PrimaryStudentKey) REFERENCES studentList(StudentPrimaryKey));
 
 Create Table PasswordTable(Password varchar(256));
 
