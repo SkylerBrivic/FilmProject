@@ -1,5 +1,5 @@
 username:root
-password:PondFish
+password:Placeholder
 serverName:localhost:3306
 databaseName:filmProject
 productTableName:productList
