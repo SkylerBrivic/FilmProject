@@ -24,4 +24,4 @@ Constraint studID FOREIGN KEY checkoutList(PrimaryStudentKey) REFERENCES student
 
 Create Table PasswordTable(Password varchar(256));
 
-Insert into PasswordTable Values('CoyFish');
+Insert into PasswordTable Values('OtherPlaceholder');
