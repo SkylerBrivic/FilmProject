@@ -2,7 +2,7 @@
 
 ## Summary
 
-This is a project that was made by Skyler Brivic, Ishraq Chowdhury and Alexander Rakovshik. It consists of a database that stores equipment rentals from the Clark University theater department (which is called the "Little Center"), a website to check items out and view available products, and a server to handle backend logic. We made this product as part of a semester-long project, and we reported our progress to the director of the Little Center throughout the semester. This website was originally going to be added to the Clark University server, but due to issues with finding a spot on the Clark server to host this website, it has yet to be put online. As such, this repository is currently the only place where the website we made can be viewed.
+This is a project that was made by Skyler Brivic, Ishraq Chowdhury and Alexander Rakovshik. It consists of a database that stores equipment rentals from the Clark University theater department (which is called the "Little Center"), a website to check items out and view available products, and a server to handle backend logic. We made this product as part of a semester-long project, and we reported our progress to the director of the Little Center throughout the semester. This website was originally going to be added to the Clark University server, but due to issues with finding a spot on the Clark server to host this website, it has yet to be put online. As such, this repository is currently the only place where the website we made can be viewed. To quickly see what the website looks like, you can look at the pictures of the website in the screenshots folder of this repository.
 
 ## Project Components
 
