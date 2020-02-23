@@ -48,3 +48,7 @@ ListProducts.java contains a servlet that returns a list of ProductAggregates re
 PasswordCheck.java is a servlet that returns 1 if the user entered in the correct password for the site, and 0 otherwise. Besides this, the servlet does not do anything.
 
 UpdateProduct.java is a servlet that updates the product name and manufacturer name of a specific product. This servlet can only be accessed if the user provides the correct password for the website.
+
+### Dependencies:
+
+This project requires the gson 2.6.2 jar and the MySQL connector jar (v. 5.1.47) to be in the build path and class path for the project in order to build and run the project.
