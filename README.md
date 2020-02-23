@@ -6,28 +6,20 @@ This is a project that was made by Skyler Brivic, Ishraq Chowdhury and Alexander
 
 ## Project Components
 
-The folder "textFiles" contains two files. One is a text document containing the mySql commands needed to create the database and tables used for the project.
-
-The other file ("information.txt") contains the database credentials that the file DatabaseInterface.java reads in order to connect to the database
+The folder "textFiles" contains two files. One is a text document containing the MySQL commands needed to create the database and tables used for the project. The other file ("information.txt") contains the database credentials that the file DatabaseInterface.java reads in order to connect to the database
 
 IMPORTANT NOTE: The file queryGenerator.java takes as input a text file where each line is of the form manufacturer name|product name|quantity. It outputs a text file containing the MySQL queries that would insert those elements into the database. The program will prompt you for the absolute pathnames of input and output files.
 
-The folder "webPages" contains 3 files containing  HTML, CSS and JavaScript. More specifically, each file is a jsp document (JavaServer Pages).
+The folder "webPages" contains 3 jsp documents and 1 css style sheet, which control the appearence and content of all 3 webpages on the site.
 
-The file userWelcomePage.jsp is the homepage for the site. 
+The folder "Src" contains two folders, which are the names of the two java packages that hold all of the java files used for the backend of the website. The first package in Src is called filmObjects, and the second package in Src is called filmProjectServlets.
 
-The file login.jsp contains the login screen (for administrators) and all the administrative functions of the site, such as checking products in and out.
+The filmObjects package contains 8 java files which contain objects that are used by the servlets (however, none of the java files in this package are servlets - they are all regular class files). 
 
-The file viewProducts.jsp is the page where regular users can view the inventory of all products and see which products are available.
+The file DatabaseInterface.java allows a user to connect to the MySQL database using the credentials in the file information.txt. It is the file that all the servlets depend on to be able to access the database. 
 
-The folder "Src" contains two folders, which are the names of the two java packages that hold all the java files used for the backend of the website. The first package in "Src" is called filmObjects, and the second package in "Src" is called filmProjectServlets.
-
-The filmObjects package contains 8 java files which contain objects that are used by the servlets (however, none of the java files in this package are servlets - they are all regular object files). 
-
-The first file is DatabaseInterface.java. This class allows a user to connect to the MySQL database using the credentials in the file information.txt. It is the file that all the servlets depend on to be able to access the database. 
-
-KeywordMatcher.java creates an object of type KeywordMatcher, which can check if a String is empty (if it contains only whitespace or no characters) using the method isEmpty,
-or can use the method matchDataStrings to compare two Strings to see if the second string appears in its entirety anywhere in the first string
+KeywordMatcher.java creates an object of type KeywordMatcher, which can check if a String is empty (if it contains only whitespace or no characters) using the method isEmpty(),
+or can use the method matchDataStrings() to compare two Strings to see if the second string appears in its entirety anywhere in the first string.
 
 The filmProjectServlets package contains 9 java files which represent servlets that the client can connect to. 
 
@@ -43,9 +35,9 @@ CheckoutProduct.java contains a servlet that checks out the product specified by
 
 DeleteProduct.java contains a servlet that deletes a specific product from the database of products. This servlet can only be accessed if the user provides the correct password for the website.
 
-ListProducts.java contains a servlet that returns a list of ProductAggregates representing all of the types of products that match the user's search query. This servlet can be accessed by anyone, and does not require a password to use.
+ListProducts.java contains a servlet that returns a list of theater equipment representing all of the types of products that match the user's search query. This servlet can be accessed by anyone, and does not require a password to use.
 
-PasswordCheck.java is a servlet that returns 1 if the user entered in the correct password for the site, and 0 otherwise. Besides this, the servlet does not do anything.
+PasswordCheck.java is a servlet that returns 1 if the user entered in the correct password for the site, and 0 otherwise.
 
 UpdateProduct.java is a servlet that updates the product name and manufacturer name of a specific product. This servlet can only be accessed if the user provides the correct password for the website.
 
